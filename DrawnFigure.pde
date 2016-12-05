@@ -1,6 +1,6 @@
 
 
-class DrawnFigure {
+class DrawnFigure extends PShape {
   
   // reference the Processing applet
   PApplet p5;
@@ -8,12 +8,12 @@ class DrawnFigure {
   // parts of figure in group
   PShape gp;
   PShape body;
-  PShape armL;
-  PShape armR;
-  PShape legL;
-  PShape legR;
-  PShape eyeL;
-  PShape eyeR;
+  Arm leftArm;
+  Arm rightArm;
+  Leg leftLeg;
+  Leg rightLeg;
+  PShape leftEye;
+  PShape rightEye;
   ArrayList<PVector> bodyVects = new ArrayList<PVector>();
   ArrayList<DrawnFigure> drawnFigures;
   
@@ -32,11 +32,12 @@ class DrawnFigure {
   // when it was added
   int added_time;
   
-  // body parts
+  // has body parts
   boolean has_limbs = false;
   boolean has_eyes = false;
   
   DrawnFigure(PApplet p5ref) {
+    super();
     p5 = p5ref;
     added_time = p5.millis();
     x = p5.mouseX;
@@ -47,19 +48,19 @@ class DrawnFigure {
     body.stroke(239);
     body.strokeWeight(10);
     body.fill(100);
-    
   }
 
   void draw_listen() {
     // as a line is made with the pen, show a line and record vertices
     // as Vectors for body shape    
     
-    PVector vert = new PVector(p5.mouseX, p5.mouseY); //<>//
-    body.vertex(vert.x, vert.y);
-    bodyVects.add(vert);
+    PVector vect = new PVector(p5.mouseX, p5.mouseY); //<>// //<>//
+    body.vertex(vect.x, vect.y);
+    bodyVects.add(vect);
     
     // trace the outline so we can see what we are doing    
     p5.line(p5.pmouseX, p5.pmouseY, p5.mouseX, p5.mouseY);
+    // after creation, get rid of this line
   }
   
   
@@ -71,8 +72,9 @@ class DrawnFigure {
     drawnFigures.add(this);
     
     get_bounds_vecs();
+    p5.clear(); // clear the draw line, DrawnFigures will get displayed again
   }
-  
+   //<>//
   void get_bounds_vecs() {
     topV = body.getVertex(0); //<>//
     bottomV = body.getVertex(0);
@@ -102,12 +104,26 @@ class DrawnFigure {
     }
     
     //if (has_eyes && has_limbs) {
-    //  if (x < p5.width) { 
-    //    x += 1;
-    //  }
+      
+      if (x < p5.width) {   
+        gp.translate(1,0);
+        x+=1;
+        //println(x);
+      }
     //}
   
 }
+
+  void display() {
+    // redisplay the DrawnFigure
+    p5.shape(gp);
+    if (has_limbs) {
+      leftArm.display();
+      rightArm.display();
+      leftLeg.display();
+      rightLeg.display();
+    }
+  }
   
   void add_limbs() {
     add_arms();
@@ -115,27 +131,25 @@ class DrawnFigure {
     has_limbs = true;
   }
   
-  void add_arms() {   
-    // these need to be child shapes
-    p5.pushStyle();
-    p5.strokeWeight(7);
-    p5.line(centerV.x, centerV.y + 20, centerV.x+35, centerV.y+65);
-    p5.line(centerV.x + 35, centerV.y + 65, centerV.x+45, centerV.y+50); // hand
-    p5.strokeWeight(6);
-    p5.line(rightestV.x, rightestV.y, rightestV.x+20, rightestV.y+30);
-    p5.line(rightestV.x+20, rightestV.y+30, rightestV.x+30, rightestV.y+20); //hand
-    p5.popStyle();
+  void add_arms() {
+    leftArm = new Arm(p5, this, 'L', centerV.x, centerV.y + 20);
+    rightArm = new Arm(p5, this, 'R', rightestV.x, rightestV.y);
+    leftArm.renderWithShape();
+    rightArm.renderWithShape();
+    gp.addChild(leftArm.shape);
+    gp.addChild(rightArm.shape);
+    println("leftArm:"+leftArm.shape);
+    //println("leftArm:"+leftArm.shape);
+    
   }
   
   void add_legs() {
-    p5.pushStyle();
-    p5.strokeWeight(5);
-    // TODO: should really look (anti/)clockwise around the vectors from bottom
-    p5.line(bottomV.x-10, bottomV.y, bottomV.x-13, bottomV.y+80);
-    p5.line(bottomV.x-13, bottomV.y+80, bottomV.x, bottomV.y+80); //foot 
-    p5.line(bottomV.x+10, bottomV.y, bottomV.x+13, bottomV.y+80);
-    p5.line(bottomV.x+13, bottomV.y+80, bottomV.x+26, bottomV.y+80); //foot
-    p5.popStyle();
+    leftLeg = new Leg(p5, this, 'L', bottomV.x-10, bottomV.y);
+    rightLeg = new Leg(p5, this, 'R', bottomV.x+10, bottomV.y);
+    leftLeg.renderWithShape();
+    rightLeg.renderWithShape();
+    gp.addChild(leftLeg.shape);
+    gp.addChild(rightLeg.shape);
   }
   
   void add_eyes() {

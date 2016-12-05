@@ -11,7 +11,7 @@ ArrayList<DrawnFigure> drawnFigures;
 DrawnFigure currentfig;
 
 void setup() {
-  size(800, 600);
+  size(1000, 1000);
   background(16);
   stroke(239);  
   strokeJoin(ROUND);
@@ -19,13 +19,20 @@ void setup() {
   //noSmooth();
   tablet = new Tablet(this);
   drawnFigures = new ArrayList<DrawnFigure>();
+  
+  // create a separate graphics context for drawing 
+  // we only use mousex, mousey within that context for tracking
+  // the tablet and rendering the drawn line()s
+  //drawg = createGraphics(40, 40);
 }
 
 
 void draw() {
+  //clear();
   if (currentfig != null) currentfig.draw_listen();
   for (int i = 0; i < drawnFigures.size(); i++) {
     drawnFigures.get(i).update();
+    drawnFigures.get(i).display();
   }
   
 }
