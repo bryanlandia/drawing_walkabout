@@ -105,8 +105,8 @@ class DrawnFigure extends PShape {
     
     if (has_eyes && has_limbs) {     
       if (x < p5.width) {   
-        //gp.translate(1,0);
-        //x+=1;
+        gp.translate(1,0);
+        x+=1;
         //println(x);
       }
     }
@@ -134,9 +134,7 @@ class DrawnFigure extends PShape {
   void add_arms() {
     leftArm = new Arm(p5, this, 'L', centerV.x, centerV.y + 20);
     rightArm = new Arm(p5, this, 'R', rightestV.x, rightestV.y);
-    //leftArm.setShapeVecs();
     leftArm.renderWithShape();
-    //rightArm.setShapeVecs();
     rightArm.renderWithShape();
     gp.addChild(leftArm.lshape);
     gp.addChild(rightArm.lshape);

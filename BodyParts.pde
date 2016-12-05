@@ -34,6 +34,8 @@ class Limb {
       
   }
   
+  // have to define this as empty function so that renderWithShape can then go find
+  // the override version in the subclass
   void setShapeVecs() {}
   
   void renderWithShape() {
@@ -54,7 +56,8 @@ class Limb {
   void update() {}
   
   void display() {
-    p5.shape(lshape);
+    //doesn't need p5.shape() again since it is drawn 
+    //with the group.
   }
 
 }

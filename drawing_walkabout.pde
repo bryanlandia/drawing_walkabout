@@ -28,7 +28,7 @@ void setup() {
 
 
 void draw() {
-  //clear();
+  clear();
   if (currentfig != null) currentfig.draw_listen();
   for (int i = 0; i < drawnFigures.size(); i++) {
     drawnFigures.get(i).update();
