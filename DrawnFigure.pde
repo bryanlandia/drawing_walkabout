@@ -103,14 +103,13 @@ class DrawnFigure extends PShape {
       if (has_eyes == false) add_eyes();
     }
     
-    //if (has_eyes && has_limbs) {
-      
+    if (has_eyes && has_limbs) {     
       if (x < p5.width) {   
-        gp.translate(1,0);
-        x+=1;
+        //gp.translate(1,0);
+        //x+=1;
         //println(x);
       }
-    //}
+    }
   
 }
 
@@ -118,6 +117,7 @@ class DrawnFigure extends PShape {
     // redisplay the DrawnFigure
     p5.shape(gp);
     if (has_limbs) {
+      //println("Displaying limbs");
       leftArm.display();
       rightArm.display();
       leftLeg.display();
@@ -134,13 +134,12 @@ class DrawnFigure extends PShape {
   void add_arms() {
     leftArm = new Arm(p5, this, 'L', centerV.x, centerV.y + 20);
     rightArm = new Arm(p5, this, 'R', rightestV.x, rightestV.y);
+    //leftArm.setShapeVecs();
     leftArm.renderWithShape();
+    //rightArm.setShapeVecs();
     rightArm.renderWithShape();
-    gp.addChild(leftArm.shape);
-    gp.addChild(rightArm.shape);
-    println("leftArm:"+leftArm.shape);
-    //println("leftArm:"+leftArm.shape);
-    
+    gp.addChild(leftArm.lshape);
+    gp.addChild(rightArm.lshape);
   }
   
   void add_legs() {
@@ -148,8 +147,8 @@ class DrawnFigure extends PShape {
     rightLeg = new Leg(p5, this, 'R', bottomV.x+10, bottomV.y);
     leftLeg.renderWithShape();
     rightLeg.renderWithShape();
-    gp.addChild(leftLeg.shape);
-    gp.addChild(rightLeg.shape);
+    gp.addChild(leftLeg.lshape);
+    gp.addChild(rightLeg.lshape);
   }
   
   void add_eyes() {

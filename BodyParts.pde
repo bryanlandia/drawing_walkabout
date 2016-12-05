@@ -5,7 +5,7 @@ class Limb {
   PApplet p5;
   DrawnFigure figParent;
   
-  PShape shape;
+  PShape lshape;
   
   //its vectors
   ArrayList<PVector> limbVecs = new ArrayList<PVector>();
@@ -21,8 +21,8 @@ class Limb {
   */
   
   PVector startPoint, leftStartPoint, rightStartPoint;
-  float[][] leftStartOffsets = new float[3][3];
-  float[][] rightStartOffsets = new float[3][3];       
+  //float[][] leftStartOffsets;
+  //float[][] rightStartOffsets;
   
   Limb(PApplet p5ref, DrawnFigure parentFig, char sideLR, float posX, float posY) {
       super();
@@ -32,42 +32,29 @@ class Limb {
       x = posX;
       y = posY;    
       
-      float[][] startOffsets = new float[3][3];
-      
-      switch(side) {
-      case 'L':          
-        startOffsets = leftStartOffsets;
-     
-      case 'R':
-        startOffsets = rightStartOffsets;
-      }
-     
-      PVector vec1, vec2, vec3;
-      vec1 = new PVector(x + startOffsets[0][0], y + startOffsets[1][0]);
-      vec2 = new PVector(x + startOffsets[0][1], y + startOffsets[1][1]);
-      vec3 = new PVector(x + startOffsets[0][2], y + startOffsets[1][2]);
-      limbVecs.add(vec1);
-      limbVecs.add(vec2);
-      limbVecs.add(vec3);    
   }
   
+  void setShapeVecs() {}
+  
   void renderWithShape() {
-      shape = p5.createShape();
-      shape.beginShape();
-      shape.stroke(239);
-      shape.fill(255);
-      shape.strokeWeight(lineThickness);
+      setShapeVecs();
+      lshape = p5.createShape();
+      lshape.beginShape();
+      lshape.stroke(239);
+      lshape.fill(255);
+      lshape.strokeWeight(lineThickness);
       for (int i=0;i<limbVecs.size();i++) {
+        println("Adding vertices to limb");
         PVector vect = limbVecs.get(i);
-        shape.vertex(vect.x, vect.y);
+        lshape.vertex(vect.x, vect.y);
       }
-      shape.endShape(CLOSE);    
+      lshape.endShape(PConstants.OPEN);   
   } 
   
   void update() {}
   
   void display() {
-    p5.shape(shape);
+    p5.shape(lshape);
   }
 
 }
@@ -82,9 +69,42 @@ class Arm extends Limb {
   Arm(PApplet p5ref, DrawnFigure parentFig, char sideLR, float posX, float posY) {
      super(p5ref, parentFig, sideLR, posX, posY);
   }     
+  
+  // wasn't able to do this in the superclass.... :(
+  void setShapeVecs() {
+    /* when doing the below in the Limb constructor wasn't getting
+      the subclasses' overrides of leftStartOffsets, rightStartOffsets
+    */
+    
+      float[][] startOffsets = new float[3][3];
+           
+      switch(side) {
+        case 'L':
+          println("using leftStartOffsets as startOffsets");
+          startOffsets = arrayCopyMultiDim(leftStartOffsets, startOffsets);
+          break;
+       
+        case 'R':
+          println("using rightStartOffsets as startOffsets");
+          startOffsets = arrayCopyMultiDim(rightStartOffsets, startOffsets);
+          break;
+      }
+          
+      PVector vec1, vec2, vec3;
+      vec1 = new PVector(x + startOffsets[0][0], y + startOffsets[1][0]);
+      vec2 = new PVector(x + startOffsets[0][1], y + startOffsets[1][1]);
+      vec3 = new PVector(x + startOffsets[0][2], y + startOffsets[1][2]);
+      limbVecs.add(vec1);
+      limbVecs.add(vec2);
+      limbVecs.add(vec3);    
+      println("vec1 is x,y: "+vec1.x + ","+vec1.y);
+      println("vec2 is x,y: "+vec2.x + ","+vec2.y);
+      println("vec3 is x,y: "+vec3.x + ","+vec3.y);
+    
+  }  
 }
 
-  
+
 class Leg extends Limb {
   
   int lineThickness = 5;
@@ -94,5 +114,40 @@ class Leg extends Limb {
   Leg(PApplet p5ref, DrawnFigure parentFig, char sideLR, float posX, float posY) {
      super(p5ref, parentFig, sideLR, posX, posY);
   }  
+  
+  // wasn't able to do this in the superclass.... :(
+  void setShapeVecs() {
+    /* when doing the below in the Limb constructor wasn't getting
+      the subclasses' overrides of leftStartOffsets, rightStartOffsets
+    */
+    
+      float[][] startOffsets = new float[3][3];
+      
+      println("side is "+side);
+      
+      switch(side) {
+        case 'L':
+          println("using leftStartOffsets as startOffsets");
+          startOffsets = arrayCopyMultiDim(leftStartOffsets, startOffsets);
+          break;
+       
+        case 'R':
+          println("using rightStartOffsets as startOffsets");
+          startOffsets = arrayCopyMultiDim(rightStartOffsets, startOffsets);
+          break;
+      }
+          
+      PVector vec1, vec2, vec3;
+      vec1 = new PVector(x + startOffsets[0][0], y + startOffsets[1][0]);
+      vec2 = new PVector(x + startOffsets[0][1], y + startOffsets[1][1]);
+      vec3 = new PVector(x + startOffsets[0][2], y + startOffsets[1][2]);
+      limbVecs.add(vec1);
+      limbVecs.add(vec2);
+      limbVecs.add(vec3);    
+      println("vec1 is x,y: "+vec1.x + ","+vec1.y);
+      println("vec2 is x,y: "+vec2.x + ","+vec2.y);
+      println("vec3 is x,y: "+vec3.x + ","+vec3.y);
+    
+  }    
 }
   
