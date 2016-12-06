@@ -1,25 +1,72 @@
+import java.util.Map;
 
-class Limb {
-  // ideally would extend PShape
- 
+
+class BodyPart extends PShape {
+  
   PApplet p5;
   DrawnFigure figParent;
   
   PShape lshape;
-  
-  //its vectors
-  ArrayList<PVector> limbVecs = new ArrayList<PVector>();
- 
+
   // Its location (relative to parent)
   float x; // x position of limb start 
   float y; // y position of limb start
   char side; // L, R
   int lineThickness;
+  int arcRadius;
+  
   /* 
   will have some other properties relating to positioning,
   attitude, etc.
   */
+    
+}
+
+
+class Eye extends BodyPart {
   
+  ArrayList<PVector> eyeVecs = new ArrayList<PVector>(); 
+  HashMap<String,float[]> expressMap = new HashMap<String,float[]>() {{
+     put("neutral_right", new float[] { PConstants.PI, PConstants.PI+PConstants.QUARTER_PI });
+     put("neutral_left", new float[] { PConstants.PI, PConstants.PI+PConstants.QUARTER_PI });
+  }};
+  float[] expressionRads = new float[2];
+  
+  
+  Eye(PApplet p5ref, DrawnFigure parentFig, char sideLR, float posX, float posY, String expression) {
+    super();
+    p5 = p5ref;
+    figParent = parentFig;
+    side = sideLR;
+    x = posX;
+    y = posY; 
+    lineThickness = 5;    
+    arcRadius = 30; 
+    expressionRads = expressMap.get(expression);
+    println("Expression was "+expression+" and expressRads vals are:"+expressionRads[0]+","+expressionRads[1]);
+    // can probably do away with an ArrayList here but keep for now
+    //eyeVecs.add(new PVector(parentFig.centerV.x + offset, parentFig.centerV.y));
+  }
+
+  //void setShapeVecs() {}
+  
+  void display() {
+      //setShapeVecs();
+      lshape = p5.createShape(ARC, x, y, arcRadius, arcRadius, expressionRads[0], expressionRads[1], OPEN);
+      lshape.setStroke(239);
+      lshape.setStrokeWeight(lineThickness);
+  } 
+  
+  void update() {}  
+  
+}
+
+
+class Limb extends BodyPart {
+  // ideally would extend PShape
+  
+  //its vectors
+  ArrayList<PVector> limbVecs = new ArrayList<PVector>();  
   PVector startPoint, leftStartPoint, rightStartPoint;
   //float[][] leftStartOffsets;
   //float[][] rightStartOffsets;
@@ -38,12 +85,12 @@ class Limb {
   // the override version in the subclass
   void setShapeVecs() {}
   
-  void renderWithShape() {
+  void display() {
       setShapeVecs();
       lshape = p5.createShape();
-      lshape.beginShape();
+      lshape.beginShape(PConstants.QUAD_STRIP);
       lshape.stroke(239);
-      lshape.fill(255);
+      lshape.fill(0);
       lshape.strokeWeight(lineThickness);
       for (int i=0;i<limbVecs.size();i++) {
         println("Adding vertices to limb");
@@ -55,11 +102,6 @@ class Limb {
   
   void update() {}
   
-  void display() {
-    //doesn't need p5.shape() again since it is drawn 
-    //with the group.
-  }
-
 }
 
 

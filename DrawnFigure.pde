@@ -12,8 +12,8 @@ class DrawnFigure extends PShape {
   Arm rightArm;
   Leg leftLeg;
   Leg rightLeg;
-  PShape leftEye;
-  PShape rightEye;
+  Eye leftEye;
+  Eye rightEye;
   ArrayList<PVector> bodyVects = new ArrayList<PVector>();
   ArrayList<DrawnFigure> drawnFigures;
   
@@ -109,20 +109,12 @@ class DrawnFigure extends PShape {
         x+=1;
         //println(x);
       }
-    }
-  
+    } 
 }
 
   void display() {
     // redisplay the DrawnFigure
     p5.shape(gp);
-    if (has_limbs) {
-      //println("Displaying limbs");
-      leftArm.display();
-      rightArm.display();
-      leftLeg.display();
-      rightLeg.display();
-    }
   }
   
   void add_limbs() {
@@ -134,8 +126,8 @@ class DrawnFigure extends PShape {
   void add_arms() {
     leftArm = new Arm(p5, this, 'L', centerV.x, centerV.y + 20);
     rightArm = new Arm(p5, this, 'R', rightestV.x, rightestV.y);
-    leftArm.renderWithShape();
-    rightArm.renderWithShape();
+    leftArm.display();
+    rightArm.display();
     gp.addChild(leftArm.lshape);
     gp.addChild(rightArm.lshape);
   }
@@ -143,25 +135,22 @@ class DrawnFigure extends PShape {
   void add_legs() {
     leftLeg = new Leg(p5, this, 'L', bottomV.x-10, bottomV.y);
     rightLeg = new Leg(p5, this, 'R', bottomV.x+10, bottomV.y);
-    leftLeg.renderWithShape();
-    rightLeg.renderWithShape();
+    leftLeg.display();
+    rightLeg.display();
     gp.addChild(leftLeg.lshape);
     gp.addChild(rightLeg.lshape);
   }
   
   void add_eyes() {
-    PVector eyesV = new PVector();    
+    //PVector eyesV = new PVector();    
+    leftEye = new Eye(p5, this, 'L', rightestV.x - 30, centerV.y + 5, "neutral_right"); 
+    rightEye = new Eye(p5, this, 'R', rightestV.x - 20 , centerV.y + 5, "neutral_right");
     
-    eyesV.x = p5.constrain(rightestV.x -20, leftestV.x + 5, rightestV.x - 20);
-    eyesV.y = centerV.y - 5;
-
-    p5.pushStyle();
-    p5.strokeWeight(3);
-    p5.noFill();
-    
-    p5.arc(eyesV.x - 5, eyesV.y, 20, 20, PI, PI+QUARTER_PI);
-    p5.arc(eyesV.x + 5, eyesV.y, 20, 20, PI, PI+QUARTER_PI);
-    p5.popStyle();
+    //eyesV.x = p5.constrain(rightestV.x -20, leftestV.x + 5, rightestV.x - 20);
+    leftEye.display();
+    rightEye.display();
+    gp.addChild(leftEye.lshape);
+    gp.addChild(rightEye.lshape);
     has_eyes = true;
   }
   
