@@ -24,6 +24,8 @@ class DrawnFigure extends PShape {
   // Its location
   float x;
   float y;
+  float startx;
+  float starty;
   
   // Its location relative to drawing PGraphics
   float drawx;
@@ -56,6 +58,8 @@ class DrawnFigure extends PShape {
     added_time = p5.millis();
     x = p5.mouseX;
     y = p5.mouseY; 
+    startx = x;
+    starty = y;
     drawx = 0;
     drawy = 0;
 
@@ -167,9 +171,8 @@ class DrawnFigure extends PShape {
     
     if (has_eyes && has_limbs && has_skin) {     
       if (x < p5.width) {   
-        //gp.translate(1,0);
-        //skin.x+=1;
-        //x+=1;
+        gp.translate(1,0);
+        x+=1;
         //println(x);
       }
     } 
@@ -179,8 +182,7 @@ class DrawnFigure extends PShape {
     // redisplay the DrawnFigure
     p5.shape(gp);
     if (has_skin) {
-      skin.mask(maskImage);
-      p5.image(skin, x, y);
+      p5.image(skin, x - startx, y-starty);
     }
   }
   

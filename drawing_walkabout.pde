@@ -58,7 +58,7 @@ void setup() {
 
 
 void draw() {
-  //background(bgColor);
+  background(bgColor);
   if (currentfig != null) {
     currentfig.draw_listen();    
     if (enableVideo && drawCam.available()) {
@@ -67,7 +67,7 @@ void draw() {
   }
   for (int i = 0; i < drawnFigures.size(); i++) {
     drawnFigures.get(i).update();
-    //drawnFigures.get(i).display();
+    drawnFigures.get(i).display();
   }
   
 }
