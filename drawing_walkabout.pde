@@ -2,7 +2,7 @@ import processing.video.*;
 //import gab.opencv.*;
 
 
-boolean enableVideo=false;
+boolean enableVideo=true;
 String cameraName;
 Capture drawCam;
 
@@ -49,7 +49,7 @@ void setup() {
     //String cameraName = "FaceTime HD Camera (Built-in)"; // built-in
     //String cameraName = "USB Video Class Video"; // built-in
     cameraName = "/dev/video0"; //RaspberryPi
-    drawCam = new Capture(this, 1, 1, cameraName, 1); //only capture one frame per second
+    drawCam = new Capture(this, 320, 240, cameraName, 30); //only capture one frame per second
     drawCam.start();
   }
  

@@ -57,6 +57,12 @@ class DrawnFigure extends PShape {
     gp = p5.createShape(PConstants.GROUP);
     body = p5.createShape();
     body.beginShape(PConstants.QUAD_STRIP);
+    //drawCam.read();
+    //drawCam.loadPixels();
+    //skin = drawCam.get();
+    skin = p5.loadImage("testtexture.png");
+    textureMode(PConstants.NORMAL);
+    body.texture(skin);
     body.stroke(239);
     body.strokeWeight(10);
     body.fill(100);
@@ -193,11 +199,14 @@ class DrawnFigure extends PShape {
     has_eyes = true;
   }
   
-  void add_skin() {    
-    drawCam.read();
+  void add_skin() {
+    println("adding skin");
+    drawCam.read(); //<>//
     drawCam.loadPixels();
     skin = drawCam.get();
+    println("skin");
     body.setTexture(skin);
+    body.setTextureMode(PConstants.NORMAL);
     has_skin = true;  
   }
   
