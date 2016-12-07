@@ -5,10 +5,16 @@ float[][] arrayCopyMultiDim (float[][] src, float[][]dest) {
   return dest;
 }
 
-float mapGlobalToDrawCanvas(float globalCoord) {
-  return map(globalCoord, 0, width, 0, drawg.width);
+float mapGlobalToDrawCanvas(float globalCoord, char xy) {  
+  float drawCoord = map(globalCoord, 
+             0, xy == 'x' ? width : height, 
+             0, xy == 'x' ? drawg.width : drawg.height);
+  println("mapped globalCoord ("+xy+")" +globalCoord+" to drawg coord "+drawCoord);
+  return drawCoord;
 }
 
-float mapDrawCanvasToGlobal(float drawCoord) {
-  return map(drawCoord, 0, drawg.width, 0, width);
+float mapDrawCanvasToGlobal(float drawCoord, char xy) {
+  return map(drawCoord, 
+             0, xy == 'x' ? drawg.width: drawg.height,
+             0, xy == 'x' ? width: height);
 }

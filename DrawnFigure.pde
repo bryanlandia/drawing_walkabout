@@ -55,8 +55,8 @@ class DrawnFigure extends PShape {
     super();
     p5 = p5ref;
     added_time = p5.millis();
-    x = p5.mouseX;
-    y = p5.mouseY; 
+    x = mapGlobalToDrawCanvas(p5.mouseX, 'x');
+    y = mapGlobalToDrawCanvas(p5.mouseY, 'y'); 
     startx = x;
     starty = y;
     drawx = 0;
@@ -73,7 +73,6 @@ class DrawnFigure extends PShape {
     maskCanvas.beginShape();
 
     gp = p5.createShape(PConstants.GROUP);
-    //gp.beginShape();
     body = p5.createShape();
     body.beginShape();
     body.stroke(255);
@@ -81,16 +80,22 @@ class DrawnFigure extends PShape {
     body.fill(255);
 
     drawg.beginDraw();    
-    drawg.background(drawbgColor); // TMP                         
-
-  } //<>//
+    drawg.background(drawbgColor); // TMP  
+    drawg.stroke(255);
+    drawg.strokeWeight(10);
+     //<>//
+    pdrawg.beginDraw(); 
+    //shouldn't need styles since it just gets drawg pixels as an image 
+    
+  }
 
   void draw_listen() {
     // trace the outline so we can see what we are doing
     // as a line is made with the pen, show a line and record vertices
     // as Vectors for body shape    
     
-    PVector vect = new PVector(p5.mouseX, p5.mouseY);
+    PVector vect = new PVector(mapGlobalToDrawCanvas(p5.mouseX, 'x'),
+                               mapGlobalToDrawCanvas(p5.mouseY, 'y'));
     body.vertex(vect.x, vect.y);
     bodyVects.add(vect);   
 
@@ -100,34 +105,39 @@ class DrawnFigure extends PShape {
     // to the bottom right corner of the sketch but still use mouse coords from the pen
        
     // translate coords to display only within the drawing PGraphic area
-    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX), 
-                           mapGlobalToDrawCanvas(p5.pmouseY), 
-                           mapGlobalToDrawCanvas(p5.mouseX), 
-                           mapGlobalToDrawCanvas(p5.mouseY) 
+    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'), 
+                           mapGlobalToDrawCanvas(p5.pmouseY, 'y'), 
+                           mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
+                           mapGlobalToDrawCanvas(p5.mouseY, 'y') 
                          };
 
+    //printArray(lineCoords);
+    drawg.image(pdrawg, 0, 0);
     drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
     drawg.endDraw();
-    p5.image(pdrawg, p5.width - drawg.width, p5.height - drawg.height);
-    p5.image(drawg, p5.width - drawg.width, p5.height - drawg.height);
+    //p5.image(pdrawg, p5.width - drawg.width, p5.height - drawg.height);
     
-    // set contents of pdrawg to current drawg
-    pdrawg.beginDraw();
-    pdrawg.background(drawbgColor);
+    // set contents of pdrawg to current drawg     //<>//
+    pdrawg.image(drawg, 0, 0); //p5.width - drawg.width, p5.height - drawg.height); //<>//
     pdrawg.endDraw();
-    pdrawg.image(drawg, p5.width - drawg.width, p5.height - drawg.height);
+    
+    p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y);
     
     // after DrawnFigure creation, get rid of this line //<>//
-  } //<>//
+  }
   
   void draw_complete() {
     // complete the body shape
     body.endShape(PConstants.CLOSE);     
     gp.addChild(body);
-    p5.shape(gp);
+    // now draw it within the corner of the drawing canvas
+    p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
     drawnFigures.add(this);    
     get_bounds_vecs();
     
+    drawg.endDraw(); //<>//
+    pdrawg.endDraw();
+     //<>//
     maskCanvas.endShape();
     maskCanvas.endDraw();
     maskImage = maskCanvas.get();
@@ -183,10 +193,10 @@ class DrawnFigure extends PShape {
 
   void display() {
     // redisplay the DrawnFigure and masked image
-    p5.shape(gp);
-    if (has_skin) {
-      p5.image(skin, x - startx, y-starty);
-    }
+    //p5.shape(gp, x, y);
+    //if (has_skin) {
+    //  p5.image(skin, x, y);
+    //}
   }
   
   void add_limbs() {
@@ -242,7 +252,7 @@ class DrawnFigure extends PShape {
     println("maskImage width:"+maskImage.width);
     //p5.image(maskCanvas, 100, 100);
     skin.mask(maskImage);
-    p5.image(skin, 0, 0);
+    p5.image(skin, drawgZeroZero.x, drawgZeroZero.y);
     //p5.image(maskImage, x, y);
     has_skin = true;  
   }

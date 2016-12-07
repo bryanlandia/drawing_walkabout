@@ -2,7 +2,7 @@ import processing.video.*;
 //import gab.opencv.*;
 
 
-boolean enableVideo=true;
+boolean enableVideo=false;
 String cameraName;
 Capture drawCam;
 
@@ -28,6 +28,8 @@ int limbsDelay = 3000; //ms delay before adding features
 int eyesDelay = 4000;
 int skinDelay = 1000;
 
+PVector drawgZeroZero;
+
 
 void setup() {
   size(1000, 1000);
@@ -42,6 +44,7 @@ void setup() {
   drawnFigures = new ArrayList<DrawnFigure>();
   drawg = createGraphics(600,600);
   pdrawg = createGraphics(600,600);
+  drawgZeroZero = new PVector(width - drawg.width, height - drawg.height);
   
   //String[] cameras = Capture.list(); // on my MacBook Pro creates NullPointerException!
   //printArray(cameras);
@@ -60,7 +63,7 @@ void setup() {
 
 
 void draw() {
-  background(bgColor);
+  //background(bgColor);
   if (currentfig != null) {
     currentfig.draw_listen();    
 

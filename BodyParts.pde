@@ -93,7 +93,7 @@ class Limb extends BodyPart {
       lshape.fill(0);
       lshape.strokeWeight(lineThickness);
       for (int i=0;i<limbVecs.size();i++) {
-        println("Adding vertices to limb");
+        //println("Adding vertices to limb");
         PVector vect = limbVecs.get(i);
         lshape.vertex(vect.x, vect.y);
       }
@@ -125,12 +125,12 @@ class Arm extends Limb {
            
       switch(side) {
         case 'L':
-          println("using leftStartOffsets as startOffsets");
+          //println("using leftStartOffsets as startOffsets");
           startOffsets = arrayCopyMultiDim(leftStartOffsets, startOffsets);
           break;
        
         case 'R':
-          println("using rightStartOffsets as startOffsets");
+          //println("using rightStartOffsets as startOffsets");
           startOffsets = arrayCopyMultiDim(rightStartOffsets, startOffsets);
           break;
       }
@@ -142,9 +142,9 @@ class Arm extends Limb {
       limbVecs.add(vec1);
       limbVecs.add(vec2);
       limbVecs.add(vec3);    
-      println("vec1 is x,y: "+vec1.x + ","+vec1.y);
-      println("vec2 is x,y: "+vec2.x + ","+vec2.y);
-      println("vec3 is x,y: "+vec3.x + ","+vec3.y);
+      //println("vec1 is x,y: "+vec1.x + ","+vec1.y);
+      //println("vec2 is x,y: "+vec2.x + ","+vec2.y);
+      //println("vec3 is x,y: "+vec3.x + ","+vec3.y);
     
   }  
 }
