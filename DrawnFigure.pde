@@ -5,6 +5,8 @@ class DrawnFigure extends PShape {
   // reference the Processing applet
   PApplet p5;
 
+  PImage skin;
+
   // parts of figure in group
   PShape gp;
   PShape body;
@@ -15,11 +17,16 @@ class DrawnFigure extends PShape {
   Eye leftEye;
   Eye rightEye;
   ArrayList<PVector> bodyVects = new ArrayList<PVector>();
+  
   ArrayList<DrawnFigure> drawnFigures;
   
   // Its location
   float x;
   float y;
+  
+  // Its location relative to drawing PGraphics
+  float drawx;
+  float drawy;
   
   // Its L,R, Top, Bottom bounds
   PVector topV;
@@ -27,7 +34,6 @@ class DrawnFigure extends PShape {
   PVector leftestV;
   PVector rightestV;
   PVector centerV;
-
   
   // when it was added
   int added_time;
@@ -35,6 +41,10 @@ class DrawnFigure extends PShape {
   // has body parts
   boolean has_limbs = false;
   boolean has_eyes = false;
+  boolean has_skin = false;
+  
+  //PGraphics pdrawg = createGraphics(600, 600);
+
   
   DrawnFigure(PApplet p5ref) {
     super();
@@ -42,27 +52,52 @@ class DrawnFigure extends PShape {
     added_time = p5.millis();
     x = p5.mouseX;
     y = p5.mouseY; 
+    drawx = 0;
+    drawy = 0;
     gp = p5.createShape(PConstants.GROUP);
     body = p5.createShape();
     body.beginShape(PConstants.QUAD_STRIP);
     body.stroke(239);
     body.strokeWeight(10);
     body.fill(100);
+    
+    // start listening for drawing as soon as we initialize 
+    drawg.beginDraw();    
+    drawg.background(drawbgColor); // TMP
+
   }
 
   void draw_listen() {
+    // trace the outline so we can see what we are doing
     // as a line is made with the pen, show a line and record vertices
     // as Vectors for body shape    
     
-    PVector vect = new PVector(p5.mouseX, p5.mouseY); //<>// //<>//
+    PVector vect = new PVector(p5.mouseX, p5.mouseY); //<>//
     body.vertex(vect.x, vect.y);
     bodyVects.add(vect);
+
+    // draw to a separate PGraphics 'canvas' to restrict the drawn objects
+    // to the bottom right corner of the sketch but still use mouse coords from the pen
+       
+    // translate coords to display only within the drawing PGraphic area
+    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX), 
+                           mapGlobalToDrawCanvas(p5.pmouseY), 
+                           mapGlobalToDrawCanvas(p5.mouseX), 
+                           mapGlobalToDrawCanvas(p5.mouseY) 
+                         };
+    drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
+    drawg.endDraw();
+    p5.image(pdrawg, p5.width - drawg.width, p5.height - drawg.height);
+    p5.image(drawg, p5.width - drawg.width, p5.height - drawg.height);
     
-    // trace the outline so we can see what we are doing    
-    p5.line(p5.pmouseX, p5.pmouseY, p5.mouseX, p5.mouseY);
-    // after creation, get rid of this line
+    // set contents of pdrawg to current drawg
+    pdrawg.beginDraw();
+    pdrawg.background(drawbgColor);
+    pdrawg.endDraw();
+    pdrawg.image(drawg, p5.width - drawg.width, p5.height - drawg.height);
+    
+    // after DrawnFigure creation, get rid of this line
   }
-  
   
   void draw_complete() {
     // complete the body shape
@@ -72,7 +107,7 @@ class DrawnFigure extends PShape {
     drawnFigures.add(this);
     
     get_bounds_vecs();
-    p5.clear(); // clear the draw line, DrawnFigures will get displayed again
+    p5.background(bgColor); // clear the draw line, DrawnFigures will get displayed again
   }
    //<>//
   void get_bounds_vecs() {
@@ -96,17 +131,21 @@ class DrawnFigure extends PShape {
   
   void update() {
     int now_ms = p5.millis();
-    if (now_ms - added_time > 3000) {
+    if (now_ms - added_time > limbsDelay) {
       if (has_limbs == false) add_limbs();
     }
-    if (now_ms - added_time > 4000) {
+    if (now_ms - added_time > eyesDelay) {
       if (has_eyes == false) add_eyes();
+    }
+    
+    if (now_ms - added_time > skinDelay ) {
+      if (has_skin == false && enableVideo == true) add_skin();      
     }
     
     if (has_eyes && has_limbs) {     
       if (x < p5.width) {   
-        gp.translate(1,0);
-        x+=1;
+        //gp.translate(1,0);
+        //x+=1;
         //println(x);
       }
     } 
@@ -152,6 +191,14 @@ class DrawnFigure extends PShape {
     gp.addChild(leftEye.lshape);
     gp.addChild(rightEye.lshape);
     has_eyes = true;
+  }
+  
+  void add_skin() {    
+    drawCam.read();
+    drawCam.loadPixels();
+    skin = drawCam.get();
+    body.setTexture(skin);
+    has_skin = true;  
   }
   
 

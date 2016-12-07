@@ -43,7 +43,7 @@ class Eye extends BodyPart {
     lineThickness = 5;    
     arcRadius = 30; 
     expressionRads = expressMap.get(expression);
-    println("Expression was "+expression+" and expressRads vals are:"+expressionRads[0]+","+expressionRads[1]);
+    //println("Expression was "+expression+" and expressRads vals are:"+expressionRads[0]+","+expressionRads[1]);
     // can probably do away with an ArrayList here but keep for now
     //eyeVecs.add(new PVector(parentFig.centerV.x + offset, parentFig.centerV.y));
   }
