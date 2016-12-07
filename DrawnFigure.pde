@@ -48,7 +48,6 @@ class DrawnFigure extends PShape {
   
   // for masking the video grab image inside the shape
   PGraphics maskCanvas;
-  PShape maskShape;
   PImage maskImage;
 
   
@@ -65,7 +64,7 @@ class DrawnFigure extends PShape {
 
     // make an additional canvas from which to generate the 
     // video image masking img
-    maskCanvas = createGraphics(600, 600);
+    maskCanvas = createGraphics(640, 480); //needs to match drawcam capture size
     maskCanvas.beginDraw();
     maskCanvas.background(0);
     maskCanvas.stroke(0);
@@ -169,7 +168,11 @@ class DrawnFigure extends PShape {
       if (has_skin == false) add_skin();
     }
     
-    if (has_eyes && has_limbs && has_skin) {     
+    if (has_eyes && has_limbs && has_skin) {
+      
+      // TODO: this will turn into much more complex
+      // movement behavior
+      
       if (x < p5.width) {   
         gp.translate(1,0);
         x+=1;
@@ -179,7 +182,7 @@ class DrawnFigure extends PShape {
 }
 
   void display() {
-    // redisplay the DrawnFigure
+    // redisplay the DrawnFigure and masked image
     p5.shape(gp);
     if (has_skin) {
       p5.image(skin, x - startx, y-starty);
