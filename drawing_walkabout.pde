@@ -2,7 +2,7 @@ import processing.video.*;
 //import gab.opencv.*;
 
 
-boolean enableVideo=true;
+boolean enableVideo=false;
 String cameraName;
 Capture drawCam;
 
@@ -30,11 +30,13 @@ int skinDelay = 4000;
 
 
 void setup() {
-  size(1000, 1000);
+  size(1000, 1000, P2D);
   background(bgColor);
   stroke(239);  
   strokeJoin(ROUND);
   smooth(8);
+  textureMode(NORMAL);
+
   //noSmooth();
   //tablet = new Tablet(this);  // not working on RPi
   drawnFigures = new ArrayList<DrawnFigure>();
