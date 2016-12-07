@@ -144,7 +144,7 @@ class Arm extends Limb {
       limbVecs.add(vec3);    
       //println("vec1 is x,y: "+vec1.x + ","+vec1.y);
       //println("vec2 is x,y: "+vec2.x + ","+vec2.y);
-      //println("vec3 is x,y: "+vec3.x + ","+vec3.y);
+      //aprintln("vec3 is x,y: "+vec3.x + ","+vec3.y);
     
   }  
 }

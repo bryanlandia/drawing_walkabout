@@ -55,10 +55,10 @@ class DrawnFigure extends PShape {
     super();
     p5 = p5ref;
     added_time = p5.millis();
-    x = mapGlobalToDrawCanvas(p5.mouseX, 'x');
-    y = mapGlobalToDrawCanvas(p5.mouseY, 'y'); 
-    startx = x;
-    starty = y;
+    x = mapGlobalToDrawCanvas(p5.mouseX, 'x') + drawgZeroZero.x;
+    y = mapGlobalToDrawCanvas(p5.mouseY, 'y') + drawgZeroZero.y; 
+    //startx = x;
+    //starty = y;
     drawx = 0;
     drawy = 0;
 
@@ -105,25 +105,25 @@ class DrawnFigure extends PShape {
     // to the bottom right corner of the sketch but still use mouse coords from the pen
        
     // translate coords to display only within the drawing PGraphic area
-    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'), 
-                           mapGlobalToDrawCanvas(p5.pmouseY, 'y'), 
-                           mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
-                           mapGlobalToDrawCanvas(p5.mouseY, 'y') 
-                         };
+    //float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'), 
+    //                       mapGlobalToDrawCanvas(p5.pmouseY, 'y'), 
+    //                       mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
+    //                       mapGlobalToDrawCanvas(p5.mouseY, 'y') 
+    //                     };
 
-    //printArray(lineCoords);
-    drawg.image(pdrawg, 0, 0);
-    drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
-    drawg.endDraw();
+    ////printArray(lineCoords);
+    //drawg.image(pdrawg, 0, 0);
+    //drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
+    //drawg.endDraw();
     //p5.image(pdrawg, p5.width - drawg.width, p5.height - drawg.height);
     
     // set contents of pdrawg to current drawg     //<>//
-    pdrawg.image(drawg, 0, 0); //p5.width - drawg.width, p5.height - drawg.height); //<>//
-    pdrawg.endDraw();
+    //pdrawg.image(drawg, 0, 0); //p5.width - drawg.width, p5.height - drawg.height); //<>//
+    //pdrawg.endDraw();
     
-    p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y);
+    //p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y);
     
-    // after DrawnFigure creation, get rid of this line //<>//
+    // after DrawnFigure creation, get rid of this line
   }
   
   void draw_complete() {
@@ -184,8 +184,8 @@ class DrawnFigure extends PShape {
       // movement behavior
       
       if (x < p5.width) {   
-        gp.translate(1,0);
-        x+=1;
+        //gp.translate(1,0);
+        //x+=1;
         //println(x);
       }
     } 
@@ -193,10 +193,10 @@ class DrawnFigure extends PShape {
 
   void display() {
     // redisplay the DrawnFigure and masked image
-    //p5.shape(gp, x, y);
-    //if (has_skin) {
-    //  p5.image(skin, x, y);
-    //}
+    p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
+    if (has_skin) {
+      p5.image(skin, drawgZeroZero.x, drawgZeroZero.y);
+    }
   }
   
   void add_limbs() {
@@ -243,7 +243,7 @@ class DrawnFigure extends PShape {
       drawCam.read();
       skin = drawCam.get();
       drawCam.stop();
-      // TODO: will need to resize to be same size as shape
+      // TODO: maybe resize to be same size as shape
       // before masking
     }
     else {
