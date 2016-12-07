@@ -167,17 +167,15 @@ class Leg extends Limb {
     */
     
       float[][] startOffsets = new float[3][3];
-      
-      println("side is "+side);
-      
+            
       switch(side) {
         case 'L':
-          println("using leftStartOffsets as startOffsets");
+          //println("using leftStartOffsets as startOffsets");
           startOffsets = arrayCopyMultiDim(leftStartOffsets, startOffsets);
           break;
        
         case 'R':
-          println("using rightStartOffsets as startOffsets");
+          //println("using rightStartOffsets as startOffsets");
           startOffsets = arrayCopyMultiDim(rightStartOffsets, startOffsets);
           break;
       }
@@ -189,9 +187,9 @@ class Leg extends Limb {
       limbVecs.add(vec1);
       limbVecs.add(vec2);
       limbVecs.add(vec3);    
-      println("vec1 is x,y: "+vec1.x + ","+vec1.y);
-      println("vec2 is x,y: "+vec2.x + ","+vec2.y);
-      println("vec3 is x,y: "+vec3.x + ","+vec3.y);
+      //println("vec1 is x,y: "+vec1.x + ","+vec1.y);
+      //println("vec2 is x,y: "+vec2.x + ","+vec2.y);
+      //println("vec3 is x,y: "+vec3.x + ","+vec3.y);
     
   }    
 }

@@ -21,12 +21,12 @@ DrawnFigure currentfig;
 PGraphics drawg;
 PGraphics pdrawg;
 
-int bgColor = 16;
+int bgColor = 0;
 int drawbgColor = 100; //16
 
 int limbsDelay = 3000; //ms delay before adding features
 int eyesDelay = 4000;
-int skinDelay = 4000;
+int skinDelay = 1000;
 
 
 void setup() {
@@ -35,7 +35,7 @@ void setup() {
   stroke(239);  
   strokeJoin(ROUND);
   smooth(8);
-  textureMode(NORMAL);
+  //textureMode(NORMAL);
 
   //noSmooth();
   //tablet = new Tablet(this);  // not working on RPi
@@ -50,9 +50,8 @@ void setup() {
     //String cameraName = "USB Camera_B4_09_24_1"; // PS3eye in USB port
     //String cameraName = "FaceTime HD Camera (Built-in)"; // built-in
     //String cameraName = "USB Video Class Video"; // built-in
-    cameraName = "/dev/video0"; //RaspberryPi
-    drawCam = new Capture(this, 320, 240, cameraName, 30); //only capture one frame per second
-    drawCam.start();
+    cameraName = "/dev/video0"; //RaspberryPi PS3eye
+    drawCam = new Capture(this, 320, 240, cameraName, 30); //this is fewest fps possible w/cam    
   }
  
 }
@@ -62,15 +61,13 @@ void draw() {
   //background(bgColor);
   if (currentfig != null) {
     currentfig.draw_listen();    
-    if (enableVideo) {
-      if (drawCam.available()) {
+    if (enableVideo && drawCam.available()) {
         drawCam.start();
-      }
     }
   }
   for (int i = 0; i < drawnFigures.size(); i++) {
     drawnFigures.get(i).update();
-    drawnFigures.get(i).display();
+    //drawnFigures.get(i).display();
   }
   
 }
@@ -79,7 +76,6 @@ void draw() {
 void mousePressed() {
   // start DrawnFigure
   DrawnFigure fig = new DrawnFigure(this);
-  fig.drawnFigures = drawnFigures;
   currentfig = fig;
 }
 
@@ -87,6 +83,7 @@ void mousePressed() {
 void mouseReleased() {
  // finish DrawnFigure 
  currentfig.draw_complete();
+ if (enableVideo) drawCam.stop();
  currentfig = null;
 }
 

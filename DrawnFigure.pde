@@ -16,9 +16,10 @@ class DrawnFigure extends PShape {
   Leg rightLeg;
   Eye leftEye;
   Eye rightEye;
+  
   ArrayList<PVector> bodyVects = new ArrayList<PVector>();
   
-  ArrayList<DrawnFigure> drawnFigures;
+  //ArrayList<DrawnFigure> drawnFigures;
   
   // Its location
   float x;
@@ -28,7 +29,7 @@ class DrawnFigure extends PShape {
   float drawx;
   float drawy;
   
-  // Its L,R, Top, Bottom bounds
+  // Its L, R, Top, Bottom bounds
   PVector topV;
   PVector bottomV;
   PVector leftestV;
@@ -43,7 +44,9 @@ class DrawnFigure extends PShape {
   boolean has_eyes = false;
   boolean has_skin = false;
   
+  // for masking the video grab image inside the shape
   PGraphics maskCanvas;
+  PShape maskShape;
   PImage maskImage;
 
   
@@ -55,22 +58,27 @@ class DrawnFigure extends PShape {
     y = p5.mouseY; 
     drawx = 0;
     drawy = 0;
-    gp = p5.createShape(PConstants.GROUP);
-    gp.beginShape();
-    body = p5.createShape();
-    body.beginShape();
-    //body.texture(skin);
-    body.stroke(239);
-    body.strokeWeight(10);
-    body.fill(100);
-    
-    // start listening for drawing as soon as we initialize 
-    drawg.beginDraw();    
-    drawg.background(drawbgColor); // TMP
-    
+
     // make an additional canvas from which to generate the 
     // video image masking img
-    maskCanvas = createGraphics(600, 600, P2D);
+    maskCanvas = createGraphics(600, 600);
+    maskCanvas.beginDraw();
+    maskCanvas.background(0);
+    maskCanvas.stroke(0);
+    maskCanvas.strokeWeight(10);
+    maskCanvas.fill(255); 
+    maskCanvas.beginShape();
+
+    gp = p5.createShape(PConstants.GROUP);
+    //gp.beginShape();
+    body = p5.createShape();
+    body.beginShape();
+    body.stroke(255);
+    body.strokeWeight(10);
+    body.fill(255);
+
+    drawg.beginDraw();    
+    drawg.background(drawbgColor); // TMP                         
 
   } //<>//
 
@@ -78,17 +86,13 @@ class DrawnFigure extends PShape {
     // trace the outline so we can see what we are doing
     // as a line is made with the pen, show a line and record vertices
     // as Vectors for body shape    
-    maskCanvas.beginDraw();
-    maskCanvas.beginShape();
-    maskCanvas.noStroke();
-    maskCanvas.fill(255);
-    maskCanvas.background(0);
     
     PVector vect = new PVector(p5.mouseX, p5.mouseY);
     body.vertex(vect.x, vect.y);
-    bodyVects.add(vect);
-    maskCanvas.vertex(vect.x, vect.y);
+    bodyVects.add(vect);   
 
+    maskCanvas.vertex(vect.x, vect.y);
+    
     // draw to a separate PGraphics 'canvas' to restrict the drawn objects
     // to the bottom right corner of the sketch but still use mouse coords from the pen
        
@@ -98,6 +102,7 @@ class DrawnFigure extends PShape {
                            mapGlobalToDrawCanvas(p5.mouseX), 
                            mapGlobalToDrawCanvas(p5.mouseY) 
                          };
+
     drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
     drawg.endDraw();
     p5.image(pdrawg, p5.width - drawg.width, p5.height - drawg.height);
@@ -110,7 +115,6 @@ class DrawnFigure extends PShape {
     pdrawg.image(drawg, p5.width - drawg.width, p5.height - drawg.height);
     
     // after DrawnFigure creation, get rid of this line //<>//
-    //canvas = createGraphics(imgW, imgH, P2D);
   } //<>//
   
   void draw_complete() {
@@ -121,12 +125,12 @@ class DrawnFigure extends PShape {
     drawnFigures.add(this);    
     get_bounds_vecs();
     
-    // make a masking image from our mask canvas
-    maskCanvas.endShape(PConstants.CLOSE);
+    maskCanvas.endShape();
     maskCanvas.endDraw();
     maskImage = maskCanvas.get();
+    maskCanvas = null;
     
-    p5.background(bgColor); // clear the draw line, DrawnFigures will get displayed again
+    //p5.background(bgColor); // clear the draw line, DrawnFigures will get displayed again
   }
    //<>//
   void get_bounds_vecs() {
@@ -155,16 +159,16 @@ class DrawnFigure extends PShape {
     }
     if (now_ms - added_time > eyesDelay) {
       if (has_eyes == false) add_eyes();
-    }
-    
+    }    
     if (now_ms - added_time > skinDelay ) {
       //if (has_skin == false && enableVideo == true) add_skin();
       if (has_skin == false) add_skin();
     }
     
-    if (has_eyes && has_limbs) {     
+    if (has_eyes && has_limbs && has_skin) {     
       if (x < p5.width) {   
         //gp.translate(1,0);
+        //skin.x+=1;
         //x+=1;
         //println(x);
       }
@@ -174,6 +178,10 @@ class DrawnFigure extends PShape {
   void display() {
     // redisplay the DrawnFigure
     p5.shape(gp);
+    if (has_skin) {
+      skin.mask(maskImage);
+      p5.image(skin, x, y);
+    }
   }
   
   void add_limbs() {
@@ -216,19 +224,20 @@ class DrawnFigure extends PShape {
   void add_skin() {
     println("adding skin");
     if (enableVideo) {
-      drawCam.read(); //<>//
+      drawCam.read();
       drawCam.loadPixels();
       skin = drawCam.get();
+      // TODO: will need to resize to be same size as shape
+      // before masking
     }
     else {
-      skin = loadImage("testtexture.jpeg");
+      skin = loadImage("testtexture.jpeg"); //<>//
     }
-    // TODO:  these need to travel with the shape
-    p5.image(skin, x, y);
+    println("maskImage width:"+maskImage.width);
+    //p5.image(maskCanvas, 100, 100); //<>//
     skin.mask(maskImage);
-    
-    //body.setTexture(skin);
-    //body.setTextureMode(PConstants.NORMAL);
+    p5.image(skin, 0, 0);
+    //p5.image(maskImage, x, y);
     has_skin = true;  
   }
   
