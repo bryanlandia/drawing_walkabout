@@ -229,17 +229,18 @@ class DrawnFigure extends PShape {
   void add_skin() {
     println("adding skin");
     if (enableVideo) {
+      //println("adding video skin");
       drawCam.read();
-      drawCam.loadPixels();
       skin = drawCam.get();
+      drawCam.stop();
       // TODO: will need to resize to be same size as shape
       // before masking
     }
     else {
-      skin = loadImage("testtexture.jpeg"); //<>//
+      skin = loadImage("testtexture.jpeg");
     }
     println("maskImage width:"+maskImage.width);
-    //p5.image(maskCanvas, 100, 100); //<>//
+    //p5.image(maskCanvas, 100, 100);
     skin.mask(maskImage);
     p5.image(skin, 0, 0);
     //p5.image(maskImage, x, y);

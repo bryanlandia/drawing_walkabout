@@ -2,7 +2,7 @@ import processing.video.*;
 //import gab.opencv.*;
 
 
-boolean enableVideo=false;
+boolean enableVideo=true;
 String cameraName;
 Capture drawCam;
 
@@ -30,7 +30,7 @@ int skinDelay = 1000;
 
 
 void setup() {
-  size(1000, 1000, P2D);
+  size(1000, 1000);
   background(bgColor);
   stroke(239);  
   strokeJoin(ROUND);
@@ -51,7 +51,9 @@ void setup() {
     //String cameraName = "FaceTime HD Camera (Built-in)"; // built-in
     //String cameraName = "USB Video Class Video"; // built-in
     cameraName = "/dev/video0"; //RaspberryPi PS3eye
-    drawCam = new Capture(this, 320, 240, cameraName, 30); //this is fewest fps possible w/cam    
+    drawCam = new Capture(this, 640, 480, cameraName, 15); //this is fewest fps possible w/cam  
+    drawCam.start();
+    
   }
  
 }
@@ -61,9 +63,7 @@ void draw() {
   background(bgColor);
   if (currentfig != null) {
     currentfig.draw_listen();    
-    if (enableVideo && drawCam.available()) {
-        drawCam.start();
-    }
+
   }
   for (int i = 0; i < drawnFigures.size(); i++) {
     drawnFigures.get(i).update();
@@ -75,15 +75,16 @@ void draw() {
 
 void mousePressed() {
   // start DrawnFigure
+  
   DrawnFigure fig = new DrawnFigure(this);
   currentfig = fig;
+  //if (enableVideo) {drawCam.start();}  would prefer to start() here, but causes rendering issues
 }
 
 
 void mouseReleased() {
  // finish DrawnFigure 
  currentfig.draw_complete();
- if (enableVideo) drawCam.stop();
  currentfig = null;
 }
 
