@@ -109,17 +109,19 @@ class Arm extends Limb {
   
   PVector dirRStartOffsetL, dirRStartOffsetR;
   PVector dirLStartOffsetL, dirLStartOffsetR;
+  HashMap<String,PVector> dirSideOffsetVec = new HashMap<String,PVector>();
   
   
   Arm(PApplet p5ref, DrawnFigure figParent, String sideLR, float posX, float posY) {
      super(p5ref, figParent, sideLR, posX, posY);
     
     // arm shape positions based on side and direction of fig
-    dirRStartOffsetL = new PVector(figParent.bodyWidth, figParent.bodyHeight/2);
-    dirRStartOffsetR = new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2);
+    dirSideOffsetVec.put("rightL", new PVector(figParent.bodyWidth, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("rightR", new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2));
   
-    dirLStartOffsetL = new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2);
-    dirLStartOffsetR = new PVector(0, figParent.bodyHeight/2);
+    dirSideOffsetVec.put("leftL", new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("leftR", new PVector(0, figParent.bodyHeight/2));
+    
   }     
   
   // wasn't able to do this in the superclass.... :(
@@ -128,32 +130,7 @@ class Arm extends Limb {
       the subclasses' overrides of leftStartOffsets, rightStartOffsets
     */
     
-      PVector startOffset = new PVector();
-           
-      switch(dirAndSide) {        
-        case "rightL":
-          println("using dirRStartOffsetL as startOffsets");
-          startOffset = dirRStartOffsetL;
-          break;
-       
-        case "rightR":
-          println("using dirRStartOffsetR as startOffsets");
-          startOffset = dirRStartOffsetR;
-          break;
-          
-        case "leftR":
-          println("using dirLStartOffsetR as startOffsets");
-          startOffset = dirLStartOffsetR;
-          break;
-          
-        case "leftL":
-          println("using dirLStartOffsetL as startOffsets");
-          startOffset = dirLStartOffsetL;
-          break;
-          
-          
-      }
-          
+      PVector startOffset = dirSideOffsetVec.get(dirAndSide);               
       PVector vec1;
       vec1 = new PVector(x + startOffset.x, y + startOffset.y);
       limbVecs.add(vec1);   

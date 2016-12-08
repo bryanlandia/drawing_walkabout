@@ -87,10 +87,10 @@ class DrawnFigure extends PShape {
     maskCanvas.fill(255); //needs to be real 255 white 
     maskCanvas.beginShape();
 
-    gp = p5.createShape(PConstants.GROUP); //<>//
+    gp = p5.createShape(PConstants.GROUP); //<>// //<>//
     body = p5.createShape();
     if (body == null) removeDrawnFigure(this); 
-    body.beginShape(); //<>//
+    body.beginShape(); //<>// //<>//
     body.stroke(white);
     body.strokeWeight(10);
     body.noFill();    
@@ -116,10 +116,10 @@ class DrawnFigure extends PShape {
     maskCanvas.vertex(vect.x, vect.y);
     
     // draw to a separate PGraphics 'canvas' to restrict the drawn objects
-    // to the bottom right corner of the sketch but still use mouse coords from the pen //<>//
-        //<>//
-    // translate coords to display only within the drawing PGraphic area //<>//
-    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'),  //<>//
+    // to the bottom right corner of the sketch but still use mouse coords from the pen //<>// //<>//
+        //<>// //<>//
+    // translate coords to display only within the drawing PGraphic area //<>// //<>//
+    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'),  //<>// //<>//
                            mapGlobalToDrawCanvas(p5.pmouseY, 'y'), 
                            mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
                            mapGlobalToDrawCanvas(p5.mouseY, 'y') 
@@ -134,11 +134,11 @@ class DrawnFigure extends PShape {
     
     drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
     drawg.endDraw();
-    p5.image(pdrawg, drawgZeroZero.x, drawgZeroZero.y); //<>//
+    p5.image(pdrawg, drawgZeroZero.x, drawgZeroZero.y); //<>// //<>//
     
-    // set contents of pdrawg to current drawg     //<>// //<>//
+    // set contents of pdrawg to current drawg     //<>// //<>// //<>//
     pdrawg.beginDraw();
-    pdrawg.image(drawg.get(), 0, 0); //<>//
+    pdrawg.image(drawg.get(), 0, 0); //<>// //<>//
     pdrawg.endDraw();
     havepdrawg = true;
   }
