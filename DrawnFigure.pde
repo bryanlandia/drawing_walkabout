@@ -221,7 +221,7 @@ class DrawnFigure extends PShape {
         add_skin();
         // TMP now give it a destination... later will be done with rules
         println("adding new destination");
-        destination = new PVector(0.0,0.0);
+        destination = new PVector(random(0,p5.width),random(0,p5.height));
       }
     }
     
@@ -239,9 +239,10 @@ class DrawnFigure extends PShape {
         PVector diffFromDest = PVector.sub(destination, new PVector(x,y)); // recalculating produces a smoothing
         println("destination is:("+destination.x+","+destination.y+")");
         println("distance from destination diffFromDest is:("+diffFromDest.x+","+diffFromDest.y+")");
-        if (abs(diffFromDest.x) > 0 && abs(diffFromDest.y) > 0) { 
-          float moveX = (diffFromDest.x / speed) / 10;
-          float moveY = (diffFromDest.y / speed) / 10;
+        
+        if (abs(diffFromDest.x) > arrivalThreshold && abs(diffFromDest.y) > arrivalThreshold) { 
+          float moveX = (diffFromDest.x / speed) / random(150,250);
+          float moveY = (diffFromDest.y / speed) / random(150,250);
           gp.translate(moveX, moveY);
           x+=moveX;
           y+=moveY;

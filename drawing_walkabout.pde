@@ -21,6 +21,7 @@ DrawnFigure currentfig;
 
 float figSpeedMin = 1;
 float figSpeedMax = 2;
+float arrivalThreshold = 10; //close enough for move() operations
 
 // create a separate graphics context for drawing 
 // we only use mousex, mousey within that context for tracking
