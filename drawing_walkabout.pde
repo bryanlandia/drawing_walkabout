@@ -19,6 +19,9 @@ import codeanticode.tablet.*;
 ArrayList<DrawnFigure> drawnFigures;
 DrawnFigure currentfig;
 
+float figSpeedMin = 0.5;
+float figSpeedMax = 2.5;
+
 // create a separate graphics context for drawing 
 // we only use mousex, mousey within that context for tracking
 // the tablet and rendering the drawn line()s

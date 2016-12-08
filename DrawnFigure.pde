@@ -27,7 +27,13 @@ class DrawnFigure extends PShape {
   float startx;
   float starty;
   
-  // Its direction
+  // Its destination, TBD by rules
+  PVector destination;
+  
+  // how fast it can move toward destination
+  float speed;
+  
+  // Its direction (which was shape is facing)
   String direction;
   float rotation = 0;
   boolean armsMirrorY = false; //direction left requires Y mirroring 
@@ -63,6 +69,8 @@ class DrawnFigure extends PShape {
     super();
     p5 = p5ref;
     added_time = p5.millis();
+    
+    speed = random(figSpeedMin, figSpeedMax);
     
     drawg = createGraphics(400,400);
     pdrawg = createGraphics(400,400);
@@ -209,22 +217,38 @@ class DrawnFigure extends PShape {
     }    
     if (now_ms - added_time > skinDelay ) {
       //if (has_skin == false && enableVideo == true) add_skin();
-      if (has_skin == false) add_skin();
+      if (has_skin == false) {
+        add_skin();
+        // TMP now give it a destination... later will be done with rules
+        println("adding new destination");
+        destination = new PVector(0.0,0.0);
+      }
     }
     
-    //if (has_eyes && has_limbs && has_skin) move();
+    if (has_eyes && has_limbs && has_skin) move();
   }
   
   void move() {   
       // TODO: this will turn into much more complex
       // movement behavior
       
-      if (x < p5.width) {   
-        gp.translate(1,0);
-        x+=1;
+      //if (x < p5.width) {
+        //destination = new PVector(random(p5.width), random(p5.height));
+        //float diffX = destination.x - x;
+        //float diffY = destination.y - y;
+        PVector diffFromDest = PVector.sub(destination, new PVector(x,y)); // recalculating produces a smoothing
+        println("destination is:("+destination.x+","+destination.y+")");
+        println("distance from destination diffFromDest is:("+diffFromDest.x+","+diffFromDest.y+")");
+        if (abs(diffFromDest.x) > 0 && abs(diffFromDest.y) > 0) { 
+          float moveX = diffFromDest.x / speed;
+          float moveY = diffFromDest.y / speed;
+          gp.translate(moveX, moveY);
+          x+=moveX;
+          y+=moveY;
+        }
                
         //println(x);
-      } 
+      //} 
 }
 
   void display() {
