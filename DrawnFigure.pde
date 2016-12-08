@@ -1,5 +1,4 @@
 
-
 class DrawnFigure extends PShape {
   
   // reference the Processing applet
@@ -21,8 +20,6 @@ class DrawnFigure extends PShape {
   Eye rightEye;
   
   ArrayList<PVector> bodyVects = new ArrayList<PVector>();
-  
-  //ArrayList<DrawnFigure> drawnFigures;
   
   // Its location
   float x;
@@ -85,7 +82,7 @@ class DrawnFigure extends PShape {
 
     gp = p5.createShape(PConstants.GROUP); //<>//
     body = p5.createShape();
-    body.beginShape();
+    body.beginShape(); //<>//
     body.stroke(255);
     body.strokeWeight(10);
     body.fill(255);
@@ -119,8 +116,8 @@ class DrawnFigure extends PShape {
     // draw to a separate PGraphics 'canvas' to restrict the drawn objects
     // to the bottom right corner of the sketch but still use mouse coords from the pen //<>//
         //<>//
-    // translate coords to display only within the drawing PGraphic area
-    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'), 
+    // translate coords to display only within the drawing PGraphic area //<>//
+    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'),  //<>//
                            mapGlobalToDrawCanvas(p5.pmouseY, 'y'), 
                            mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
                            mapGlobalToDrawCanvas(p5.mouseY, 'y') 
@@ -137,9 +134,9 @@ class DrawnFigure extends PShape {
     drawg.endDraw();
     p5.image(pdrawg, drawgZeroZero.x, drawgZeroZero.y); //<>//
     
-    // set contents of pdrawg to current drawg     //<>//
+    // set contents of pdrawg to current drawg     //<>// //<>//
     pdrawg.beginDraw();
-    pdrawg.image(drawg.get(), 0, 0);
+    pdrawg.image(drawg.get(), 0, 0); //<>//
     pdrawg.endDraw();
     havepdrawg = true;
     
@@ -150,15 +147,21 @@ class DrawnFigure extends PShape {
   
   void draw_complete() {
     // complete the body shape
-    body.endShape(PConstants.CLOSE);     
+    body.endShape(PConstants.CLOSE);   
+    get_bounds_vecs();
+    if (isViableFigure() == false) {
+      removeDrawnFigure(this);
+      return;
+    }
+    
     gp.addChild(body);
     // now draw it within the corner of the drawing canvas
     p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
     drawnFigures.add(this);    
-    get_bounds_vecs();
     
-    //drawg.endDraw();
-    //pdrawg.endDraw();
+    
+    drawg = null;
+    pdrawg = null;
     
     maskCanvas.endShape();
     maskCanvas.endDraw();
@@ -167,13 +170,23 @@ class DrawnFigure extends PShape {
     
     //p5.background(bgColor); // clear the draw line, DrawnFigures will get displayed again
   }
-   //<>//
+
+
   void get_bounds_vecs() {
-    topV = body.getVertex(0); //<>//
-    bottomV = body.getVertex(0);
-    leftestV = body.getVertex(0);
-    rightestV = body.getVertex(0);
-    centerV = new PVector();
+    //not sure why yet but sometimes body isn't available.
+    try {
+      topV = body.getVertex(0);
+      bottomV = body.getVertex(0);
+      leftestV = body.getVertex(0);
+      rightestV = body.getVertex(0);
+      centerV = new PVector();
+    } catch (NullPointerException e) {
+      // wait and try again?
+      println("\n\nCaught NullPointerException in get_bounds_vecs");
+      //delay(100);
+      removeDrawnFigure(this);
+      return;
+    }
     
     for (int j=0; j< body.getVertexCount(); j++) {
       PVector v = body.getVertex(j);
@@ -282,6 +295,15 @@ class DrawnFigure extends PShape {
     has_skin = true;  
   }
   
+  boolean isViableFigure() {
+    // if the size of the drawn body shape is too small, signal
+    // to destroy the DrawnFigure
+    if (bottomV.y - topV.y < drawingHeightMin || rightestV.x - leftestV.x < drawingWidthMin) {
+      return false;
+    } else return true;
+    
+  }
+  
 
   /* 
   // UTILITY FUNCTIONS
@@ -291,7 +313,7 @@ class DrawnFigure extends PShape {
     float drawCoord = map(globalCoord, 
                0, xy == 'x' ? p5.width : p5.height, 
                0, xy == 'x' ? drawg.width : drawg.height);
-    println("mapped globalCoord ("+xy+")" +globalCoord+" to drawg coord "+drawCoord);
+    if (traceCoords) println("mapped globalCoord ("+xy+")" +globalCoord+" to drawg coord "+drawCoord);
     return drawCoord;
   }
   

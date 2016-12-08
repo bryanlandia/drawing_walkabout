@@ -3,7 +3,10 @@ import processing.video.*;
 
 
 boolean enableVideo=false;
-boolean traceCoords=true;
+boolean traceCoords=false;
+
+int drawingHeightMin = 40;
+int drawingWidthMin = 40;
 
 String cameraName;
 Capture drawCam;

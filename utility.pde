@@ -4,3 +4,15 @@ float[][] arrayCopyMultiDim (float[][] src, float[][]dest) {
   }
   return dest;
 }
+
+void removeDrawnFigure(DrawnFigure fig) {
+  fig = null;
+  try {
+    drawnFigures.remove(drawnFigures.indexOf(fig));
+  } catch (ArrayIndexOutOfBoundsException e) { 
+        // might not have been added  yet
+        // do nothing
+     println(e);
+  }
+  println("Removed DrawnFigure ") ;//+ (String)fig.body); how to cast to String?
+}
