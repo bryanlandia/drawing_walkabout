@@ -50,17 +50,14 @@ class DrawnFigure extends PShape {
   // for masking the video grab image inside the shape
   PGraphics maskCanvas;
   PImage maskImage;
-  
-  boolean startedDrawCanvases = false;
-
-  
+   
   DrawnFigure(PApplet p5ref) {
     super();
     p5 = p5ref;
     added_time = p5.millis();
     
-    drawg = createGraphics(600,600);
-    pdrawg = createGraphics(600,600);
+    drawg = createGraphics(400,400);
+    pdrawg = createGraphics(400,400);
     drawgZeroZero = new PVector(p5.width - drawg.width, p5.height - drawg.height);
     
     x = mapGlobalToDrawCanvas(p5.mouseX, 'x') + drawgZeroZero.x;
@@ -86,10 +83,7 @@ class DrawnFigure extends PShape {
     body.beginShape(); //<>//
     body.stroke(255);
     body.strokeWeight(10);
-    body.noFill();
-
-   //shouldn't need styles since it just gets drawg pixels as an image 
-    
+    body.noFill();    
   }
   
   void init_drawg() {
@@ -97,9 +91,6 @@ class DrawnFigure extends PShape {
     drawg.background(drawbgColor); // TMP  
     drawg.stroke(255);
     drawg.strokeWeight(5);
-    
-    //pdrawg.beginDraw();
-    //startedDrawCanvases = true;
   }
 
   void draw_listen() {
@@ -140,10 +131,6 @@ class DrawnFigure extends PShape {
     pdrawg.image(drawg.get(), 0, 0); //<>//
     pdrawg.endDraw();
     havepdrawg = true;
-    
-    //p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y);
-    
-    // after DrawnFigure creation, get rid of this line
   }
   
   void draw_complete() {

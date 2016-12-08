@@ -25,8 +25,8 @@ DrawnFigure currentfig;
 int bgColor = 0;
 int drawbgColor = 0; //16
 
-int limbsDelay = 3000; //ms delay before adding features
-int eyesDelay = 4000;
+int limbsDelay = 2000; //ms delay before adding features
+int eyesDelay = 3000;
 int skinDelay = 1000;
 
 PVector drawgZeroZero;
