@@ -27,13 +27,10 @@ class DrawnFigure extends PShape {
   float startx;
   float starty;
   
-  // Its location relative to drawing PGraphics
-  //float drawx;
-  //float drawy;
-  
   // Its direction
   String direction;
   float rotation = 0;
+  boolean armsMirrorY = false; //direction left requires Y mirroring 
   
   // Its L, R, Top, Bottom bounds
   PVector topV;
@@ -42,10 +39,12 @@ class DrawnFigure extends PShape {
   PVector rightestV;
   PVector centerV;
   
+  // accurate width, height based on bounds of body
+  float bodyWidth, bodyHeight;
+  
   // when it was added
   int added_time;
-  
-  
+    
   // has body parts
   boolean has_limbs = false;
   boolean has_eyes = false;
@@ -57,7 +56,7 @@ class DrawnFigure extends PShape {
   
   
   DrawnFigure(PApplet p5ref) {
-    this(p5ref, "right");  // default is right
+    this(p5ref, "left");  // default is left
   }
    
   DrawnFigure(PApplet p5ref, String dir) {
@@ -71,12 +70,12 @@ class DrawnFigure extends PShape {
     
     direction = dir;
     rotation = directionsDict.get(direction);
+    armsMirrorY = (dir == "left") ? true : false;
+    
     x = mapGlobalToDrawCanvas(p5.mouseX, 'x') + drawgZeroZero.x;
     y = mapGlobalToDrawCanvas(p5.mouseY, 'y') + drawgZeroZero.y; 
     startx = x;
     starty = y;
-    //drawx = 0;
-    //drawy = 0;
 
     // make an additional canvas from which to generate the 
     // video image masking img
@@ -149,6 +148,8 @@ class DrawnFigure extends PShape {
     body.endShape(PConstants.CLOSE);  
     
     get_bounds_vecs();
+    bodyHeight = bottomV.y - topV.y;
+    bodyWidth = rightestV.x - leftestV.x;
     if (isViableFigure() == false) {
       removeDrawnFigure(this);
       return;
@@ -159,7 +160,7 @@ class DrawnFigure extends PShape {
     p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
     drawnFigures.add(this);    
     
-    
+    //remove refs for garbage collector
     drawg = null;
     pdrawg = null;
     
@@ -167,8 +168,6 @@ class DrawnFigure extends PShape {
     maskCanvas.endDraw();
     maskImage = maskCanvas.get();
     maskCanvas = null;
-    
-    //p5.background(bgColor); // clear the draw line, DrawnFigures will get displayed again
   }
 
 
@@ -245,8 +244,8 @@ class DrawnFigure extends PShape {
   }
   
   void add_arms() {
-    leftArm = new Arm(p5, this, "L", centerV.x, centerV.y + 20);
-    rightArm = new Arm(p5, this, "R", rightestV.x, rightestV.y);
+    leftArm = new Arm(p5, this, "L", leftestV.x, topV.y);
+    rightArm = new Arm(p5, this, "R", leftestV.x, topV.y);
     leftArm.display();
     rightArm.display();
     gp.addChild(leftArm.lshape);
@@ -299,7 +298,7 @@ class DrawnFigure extends PShape {
   boolean isViableFigure() {
     // if the size of the drawn body shape is too small, signal
     // to destroy the DrawnFigure
-    if (bottomV.y - topV.y < drawingHeightMin || rightestV.x - leftestV.x < drawingWidthMin) {
+    if (bodyHeight < drawingHeightMin || bodyWidth < drawingWidthMin) {
       return false;
     } else return true;
     
