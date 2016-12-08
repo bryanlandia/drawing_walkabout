@@ -68,8 +68,8 @@ class DrawnFigure extends PShape {
     
     x = mapGlobalToDrawCanvas(p5.mouseX, 'x') + drawgZeroZero.x;
     y = mapGlobalToDrawCanvas(p5.mouseY, 'y') + drawgZeroZero.y; 
-    //startx = x;
-    //starty = y;
+    startx = x;
+    starty = y;
     drawx = 0;
     drawy = 0;
 
@@ -206,8 +206,9 @@ class DrawnFigure extends PShape {
       // movement behavior
       
       if (x < p5.width) {   
-        //gp.translate(1,0);
-        //x+=1;
+        gp.translate(1,0);
+        x+=1;
+               
         //println(x);
       }
     } 
@@ -216,8 +217,10 @@ class DrawnFigure extends PShape {
   void display() {
     // redisplay the DrawnFigure and masked image
     p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
+    float diffx = x - startx;
+    float diffy = y - starty;
     if (has_skin) {
-      p5.image(skin, drawgZeroZero.x, drawgZeroZero.y);
+      p5.image(skin, drawgZeroZero.x + diffx, drawgZeroZero.y + diffy);
     }
   }
   

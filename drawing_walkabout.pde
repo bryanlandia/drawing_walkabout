@@ -58,7 +58,7 @@ void setup() {
 
 
 void draw() {
-  //background(bgColor);
+  background(bgColor);
   if (currentfig != null) {
     currentfig.draw_listen();    
 
