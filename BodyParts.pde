@@ -53,7 +53,7 @@ class Eye extends BodyPart {
   void display() {
       //setShapeVecs();
       lshape = p5.createShape(ARC, x, y, arcRadius, arcRadius, expressionRads[0], expressionRads[1], OPEN);
-      lshape.setStroke(239);
+      lshape.setStroke(white);
       lshape.setStrokeWeight(lineThickness);
   } 
   
@@ -89,7 +89,7 @@ class Limb extends BodyPart {
       setShapeVecs();
       lshape = p5.createShape();
       lshape.beginShape(PConstants.QUAD_STRIP);
-      lshape.stroke(239);
+      lshape.stroke(white);
       lshape.fill(0);
       lshape.strokeWeight(lineThickness);
       for (int i=0;i<limbVecs.size();i++) {

@@ -74,14 +74,14 @@ class DrawnFigure extends PShape {
     maskCanvas.background(0);
     maskCanvas.stroke(0);
     maskCanvas.strokeWeight(10);
-    maskCanvas.fill(255); 
+    maskCanvas.fill(255); //needs to be real 255 white 
     maskCanvas.beginShape();
 
     gp = p5.createShape(PConstants.GROUP); //<>//
     body = p5.createShape();
     if (body == null) removeDrawnFigure(this); 
     body.beginShape(); //<>//
-    body.stroke(255);
+    body.stroke(white);
     body.strokeWeight(10);
     body.noFill();    
   }
@@ -89,7 +89,7 @@ class DrawnFigure extends PShape {
   void init_drawg() {
     drawg.beginDraw();    
     drawg.background(drawbgColor); // TMP  
-    drawg.stroke(255);
+    drawg.stroke(white);
     drawg.strokeWeight(5);
   }
 

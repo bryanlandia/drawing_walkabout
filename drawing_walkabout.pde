@@ -24,6 +24,8 @@ DrawnFigure currentfig;
 // the tablet and rendering the drawn line()s
 int bgColor = 0;
 int drawbgColor = 0; //16
+color white = color(239);
+color black = color(0);
 
 int limbsDelay = 2000; //ms delay before adding features
 int eyesDelay = 3000;
@@ -38,8 +40,8 @@ PShape armShape;
 void setup() {
   size(1300, 950);
   background(bgColor);
-  stroke(239);  
-  fill(255);
+  stroke(white);  
+  fill(white);
   strokeJoin(ROUND);
   smooth(8);
   //textureMode(NORMAL);
