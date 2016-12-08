@@ -225,7 +225,7 @@ class DrawnFigure extends PShape {
       }
     }
     
-    if (has_eyes && has_limbs && has_skin) move();
+    if (has_eyes && has_limbs && has_skin && destination != null) move();
   }
   
   void move() {   
@@ -240,11 +240,14 @@ class DrawnFigure extends PShape {
         println("destination is:("+destination.x+","+destination.y+")");
         println("distance from destination diffFromDest is:("+diffFromDest.x+","+diffFromDest.y+")");
         if (abs(diffFromDest.x) > 0 && abs(diffFromDest.y) > 0) { 
-          float moveX = diffFromDest.x / speed;
-          float moveY = diffFromDest.y / speed;
+          float moveX = (diffFromDest.x / speed) / 10;
+          float moveY = (diffFromDest.y / speed) / 10;
           gp.translate(moveX, moveY);
           x+=moveX;
           y+=moveY;
+        }
+        else {
+          destination = null;
         }
                
         //println(x);
