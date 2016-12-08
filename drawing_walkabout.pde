@@ -51,9 +51,9 @@ void setup() {
   // direction facing for DrawnFigures
   directionsDict = new FloatDict();
   directionsDict.set("right", 0);
-  directionsDict.set("down", HALF_PI);
+  directionsDict.set("down", HALF_PI );//- radians(10));
   directionsDict.set("left", PI);
-  directionsDict.set("up", PI + HALF_PI);
+  directionsDict.set("up", PI + HALF_PI);// + radians(10));
 
   //noSmooth();
   //tablet = new Tablet(this);  // not working on RPi

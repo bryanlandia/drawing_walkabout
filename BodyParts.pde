@@ -6,7 +6,7 @@ class BodyPart extends PShape {
   PApplet p5;
   DrawnFigure parentFig;
   
-  PShape lshape;
+  PShape limbshape;
 
   // Its location (relative to parent)
   float x; // x position of limb start 
@@ -52,9 +52,9 @@ class Eye extends BodyPart {
   
   void display() {
       //setShapeVecs();
-      lshape = p5.createShape(ARC, x, y, arcRadius, arcRadius, expressionRads[0], expressionRads[1], OPEN);
-      lshape.setStroke(white);
-      lshape.setStrokeWeight(lineThickness);
+      limbshape = p5.createShape(ARC, x, y, arcRadius, arcRadius, expressionRads[0], expressionRads[1], OPEN);
+      limbshape.setStroke(white);
+      limbshape.setStrokeWeight(lineThickness);
   } 
   
   void update() {}  
@@ -87,17 +87,17 @@ class Limb extends BodyPart {
   
   void display() {
       setShapeVecs();
-      lshape = p5.createShape();
-      lshape.beginShape(PConstants.QUAD_STRIP);
-      lshape.stroke(white);
-      lshape.fill(0);
-      lshape.strokeWeight(lineThickness);
+      limbshape = p5.createShape();
+      limbshape.beginShape(PConstants.QUAD_STRIP);
+      limbshape.stroke(white);
+      limbshape.fill(0);
+      limbshape.strokeWeight(lineThickness);
       for (int i=0;i<limbVecs.size();i++) {
         //println("Adding vertices to limb");
         PVector vect = limbVecs.get(i);
-        lshape.vertex(vect.x, vect.y);
+        limbshape.vertex(vect.x, vect.y);
       }
-      lshape.endShape(PConstants.OPEN);   
+      limbshape.endShape(PConstants.OPEN);   
   } 
   
   void update() {}
@@ -122,6 +122,13 @@ class Arm extends Limb {
     dirSideOffsetVec.put("leftL", new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2));
     dirSideOffsetVec.put("leftR", new PVector(0, figParent.bodyHeight/2));
     
+    dirSideOffsetVec.put("upL", new PVector(0, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("upR", new PVector(figParent.bodyWidth, figParent.bodyHeight/2));
+    
+    //down can be like up but will be rotated differently
+    dirSideOffsetVec.put("downL", dirSideOffsetVec.get("upL"));
+    dirSideOffsetVec.put("downR", dirSideOffsetVec.get("upR"));
+    
   }     
   
   // wasn't able to do this in the superclass.... :(
@@ -138,17 +145,17 @@ class Arm extends Limb {
   
   void display() {
     setShapeVecs();
-    lshape = createShape(p5, armShape);
-    lshape.setVisible(false);
-    lshape.translate(limbVecs.get(0).x, limbVecs.get(0).y);
-    lshape.scale(1.25);
-    lshape.disableStyle();
-    lshape.rotate(parentFig.rotation); //rotate for correction direction
-    if (parentFig.armsMirrorY) lshape.scale(1, -1); // transform for correct direction
-    //lshape.rotate(radians(random(-15,15))); // add some randomness    
+    limbshape = createShape(p5, armShape);
+    limbshape.setVisible(false);
+    limbshape.translate(limbVecs.get(0).x, limbVecs.get(0).y);
+    limbshape.scale(1.25);
+    limbshape.disableStyle();
+    limbshape.rotate(parentFig.rotation); //rotate for correction direction
+    if (parentFig.armsMirrorY) limbshape.scale(1, -1); // transform for correct direction
+    //limbshape.rotate(radians(random(-15,15))); // add some randomness    
     //p5.pushStyle();
-    p5.shape(lshape);
-    lshape.setVisible(true);
+    p5.shape(limbshape);
+    limbshape.setVisible(true);
     //p5.popStyle();
   }
     
