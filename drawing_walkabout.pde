@@ -50,8 +50,9 @@ float arrivalThreshold = 10; //close enough for move() operations
 // the tablet and rendering the drawn line()s
 int bgColor = 0;
 int drawbgColor = 0; //16
-color white = color(239);
+color white = color(255); //239;
 color black = color(0);
+color gray = color(100);
 
 int headDelay = 1000; //ms delay before adding features
 int limbsDelay = 2000; 
@@ -62,6 +63,7 @@ PVector drawgZeroZero;
 
 //our SVG shapes. copied in bodyparts
 PShape armShape;
+PShape legShape;
 
 FloatDict directionsDict;
 
@@ -79,7 +81,7 @@ void setup() {
   directionsDict = new FloatDict();
   directionsDict.set("right", 0);
   directionsDict.set("down", HALF_PI );//- radians(10));
-  directionsDict.set("left", PI);
+  directionsDict.set("left", radians(40));
   directionsDict.set("up", PI + HALF_PI);// + radians(10));
 
   //noSmooth();
@@ -100,8 +102,11 @@ void setup() {
   }
   
   //load our SVGs, 
-  armShape = loadShape("arm_tendril0_sm.svg");
-  armShape.setVisible(false); 
+  //armShape = loadShape("arm_tendril0_sm.svg");
+  armShape = loadShape("arm_arm0.svg");
+  armShape.setVisible(false);
+  legShape = loadShape("leg_leg0.svg");
+  legShape.setVisible(false);
 }
 
 

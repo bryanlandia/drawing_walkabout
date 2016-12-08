@@ -64,7 +64,7 @@ class DrawnFigure extends PShape {
   
   
   DrawnFigure(PApplet p5ref) {
-    this(p5ref, "down");  // default is left
+    this(p5ref, "left");  // default is left
   }
    
   DrawnFigure(PApplet p5ref, String dir) {
@@ -166,6 +166,7 @@ class DrawnFigure extends PShape {
       return;
     }
     
+    add_limbs();
     gp.addChild(body);
 
     // now draw it within the corner of the drawing canvas
@@ -214,11 +215,12 @@ class DrawnFigure extends PShape {
   void update() {
     int now_ms = p5.millis();
     if (now_ms - added_time > headDelay) {
-      if (has_limbs == false) add_head();
+      if (has_head == false) add_head();
     }
-    if (now_ms - added_time > limbsDelay) {
-      if (has_limbs == false) add_limbs();
-    }
+    // we want to instead draw them first so they are bottom in depth stack
+    //if (now_ms - added_time > limbsDelay) {
+    //  if (has_limbs == false) add_limbs();
+    //}
     if (now_ms - added_time > eyesDelay) {
       if (has_eyes == false) add_eyes();
     }    
@@ -266,14 +268,15 @@ class DrawnFigure extends PShape {
     // redisplay the DrawnFigure and masked image
     float diffx = x - startx;
     float diffy = y - starty;
+    p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
     if (has_skin) {
       p5.image(skin, drawgZeroZero.x + diffx, drawgZeroZero.y + diffy);
     }
-    p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
+    
   }
   
   void add_head() {
-    head = new Head(p5, this, centerV.x, topV.y - 10);
+    head = new Head(p5, this, centerV.x, topV.y - 20);
     head.display();
     gp.addChild(head.headShape);    
     has_head = true;
@@ -287,7 +290,7 @@ class DrawnFigure extends PShape {
   
   void add_arms() {
     leftArm = new Arm(p5, this, "L", leftestV.x, topV.y);
-    rightArm = new Arm(p5, this, "R", leftestV.x, topV.y);
+    rightArm = new Arm(p5, this, "R", rightestV.x, topV.y);
     leftArm.display();
     rightArm.display();
     gp.addChild(leftArm.limbshape);
@@ -295,8 +298,8 @@ class DrawnFigure extends PShape {
   }
   
   void add_legs() {
-    leftLeg = new Leg(p5, this, "L", bottomV.x-10, bottomV.y);
-    rightLeg = new Leg(p5, this, "R", bottomV.x+10, bottomV.y);
+    leftLeg = new Leg(p5, this, "L", leftestV.x, bottomV.y);
+    rightLeg = new Leg(p5, this, "R", rightestV.x+10, bottomV.y);
     leftLeg.display();
     rightLeg.display();
     gp.addChild(leftLeg.limbshape);
@@ -306,7 +309,7 @@ class DrawnFigure extends PShape {
   void add_eyes() {
     //PVector eyesV = new PVector();    
     leftEye = new Eye(p5, this, "L", head.x + 20, head.y+5, "neutral_right"); 
-    rightEye = new Eye(p5, this, "R", head.x + 35 , head.y+5, "neutral_right");
+    rightEye = new Eye(p5, this, "R", head.x + 30 , head.y+5, "neutral_right");
     
     //eyesV.x = p5.constrain(rightestV.x -20, leftestV.x + 5, rightestV.x - 20);
     leftEye.display();

@@ -40,10 +40,18 @@ class Head extends BodyPart {
   void display() {
     float headW = constrain(parentFig.bodyWidth / 3, 20, 50);
     float headH = headW;
-    headShape = p5.createShape(ELLIPSE, x, y, headW, headH);
-    headShape.setStroke(white);
-    headShape.setStrokeWeight(7);
-    headShape.setFill(black);
+    headShape = p5.createShape(GROUP);
+    PShape faceShape = p5.createShape(ELLIPSE, x, y, headW, headH);
+    faceShape.setStroke(white);
+    faceShape.setStrokeWeight(7);
+    faceShape.setFill(gray);
+    PShape strokeShape = p5.createShape(ELLIPSE, x, y, headW-7, headH-7); //7 is strokeWeight
+    faceShape.setStroke(black);
+    faceShape.setStrokeWeight(1);
+    noFill();
+    //faceShape.noFill();
+    headShape.addChild(faceShape);
+    headShape.addChild(strokeShape);    
   }
   
 }
@@ -69,7 +77,7 @@ class Eye extends BodyPart {
     side = sideLR;
     x = posX;
     y = posY; 
-    lineThickness = 4;
+    lineThickness = 2;
     arcRadius = 50; 
     expressionRads = expressMap.get(expression);
     //println("Expression was "+expression+" and expressRads vals are:"+expressionRads[0]+","+expressionRads[1]);
@@ -82,7 +90,7 @@ class Eye extends BodyPart {
   void display() {
       //setShapeVecs();
       limbshape = p5.createShape(ARC, x, y, arcRadius, arcRadius, expressionRads[0], expressionRads[1], OPEN);
-      limbshape.setStroke(white);
+      limbshape.setStroke(black);
       limbshape.setStrokeWeight(lineThickness);
   } 
   
@@ -148,8 +156,10 @@ class Arm extends Limb {
     dirSideOffsetVec.put("rightL", new PVector(figParent.bodyWidth, figParent.bodyHeight/2));
     dirSideOffsetVec.put("rightR", new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2));
   
-    dirSideOffsetVec.put("leftL", new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2));
-    dirSideOffsetVec.put("leftR", new PVector(0, figParent.bodyHeight/2));
+    //dirSideOffsetVec.put("leftL", new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("leftL", new PVector(0,10));
+    //dirSideOffsetVec.put("leftR", new PVector(0, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("leftR", new PVector(-15, 10));
     
     dirSideOffsetVec.put("upL", new PVector(0, figParent.bodyHeight/2));
     dirSideOffsetVec.put("upR", new PVector(figParent.bodyWidth, figParent.bodyHeight/2));
@@ -177,11 +187,14 @@ class Arm extends Limb {
     limbshape = createShape(p5, armShape);
     limbshape.setVisible(false);
     limbshape.translate(limbVecs.get(0).x, limbVecs.get(0).y);
-    limbshape.scale(1.25);
-    limbshape.disableStyle();
-    limbshape.rotate(parentFig.rotation); //rotate for correction direction
-    if (parentFig.armsMirrorY) limbshape.scale(1, -1); // transform for correct direction
-    //limbshape.rotate(radians(random(-15,15))); // add some randomness    
+    limbshape.scale(0.4);
+    //limbshape.disableStyle();
+    limbshape.setFill(white);
+    limbshape.setStroke(black);
+    limbshape.rotate( side =="R" ? -1 * parentFig.rotation: parentFig.rotation); //rotate for correction direction
+    //if (parentFig.armsMirrorY) limbshape.scale(-1,1); // transform for correct direction
+    if (side=="R") limbshape.scale(-1,1); // transform for correct direction
+    limbshape.rotate(radians(random(-5,5))); // add some randomness    
     //p5.pushStyle();
     p5.shape(limbshape);
     limbshape.setVisible(true);
@@ -192,14 +205,31 @@ class Arm extends Limb {
 
 
 class Leg extends Limb {
+  PVector dirRStartOffsetL, dirRStartOffsetR;
+  PVector dirLStartOffsetL, dirLStartOffsetR;
+  HashMap<String,PVector> dirSideOffsetVec = new HashMap<String,PVector>();
   
-  int lineThickness = 5;
-  float[][] leftStartOffsets = { {-10.0, -13.0, 0}, {0.0, 80.0, 80.0} };
-  float[][] rightStartOffsets = { {10.0, 13.0, 26.0}, {0.0, 80.0, 80.0} };
   
-  Leg(PApplet p5ref, DrawnFigure parentFig, String sideLR, float posX, float posY) {
-     super(p5ref, parentFig, sideLR, posX, posY);
-  }  
+  Leg(PApplet p5ref, DrawnFigure figParent, String sideLR, float posX, float posY) {
+     super(p5ref, figParent, sideLR, posX, posY);
+    
+    // arm shape positions based on side and direction of fig
+    dirSideOffsetVec.put("rightL", new PVector(figParent.bodyWidth, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("rightR", new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2));
+  
+    //dirSideOffsetVec.put("leftL", new PVector(figParent.bodyWidth/2, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("leftL", new PVector(20,-10));
+    //dirSideOffsetVec.put("leftR", new PVector(0, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("leftR", new PVector(-20, -10));
+    
+    dirSideOffsetVec.put("upL", new PVector(0, figParent.bodyHeight/2));
+    dirSideOffsetVec.put("upR", new PVector(figParent.bodyWidth, figParent.bodyHeight/2));
+    
+    //down can be like up but will be rotated differently
+    dirSideOffsetVec.put("downL", dirSideOffsetVec.get("upL"));
+    dirSideOffsetVec.put("downR", dirSideOffsetVec.get("upR"));
+    
+  }     
   
   // wasn't able to do this in the superclass.... :(
   void setShapeVecs() {
@@ -207,31 +237,29 @@ class Leg extends Limb {
       the subclasses' overrides of leftStartOffsets, rightStartOffsets
     */
     
-      float[][] startOffsets = new float[3][3];
-            
-      switch(side) {
-        case "L":
-          //println("using leftStartOffsets as startOffsets");
-          startOffsets = arrayCopyMultiDim(leftStartOffsets, startOffsets);
-          break;
-       
-        case "R":
-          //println("using rightStartOffsets as startOffsets");
-          startOffsets = arrayCopyMultiDim(rightStartOffsets, startOffsets);
-          break;
-      }
-          
-      PVector vec1, vec2, vec3;
-      vec1 = new PVector(x + startOffsets[0][0], y + startOffsets[1][0]);
-      vec2 = new PVector(x + startOffsets[0][1], y + startOffsets[1][1]);
-      vec3 = new PVector(x + startOffsets[0][2], y + startOffsets[1][2]);
-      limbVecs.add(vec1);
-      limbVecs.add(vec2);
-      limbVecs.add(vec3);    
-      //println("vec1 is x,y: "+vec1.x + ","+vec1.y);
-      //println("vec2 is x,y: "+vec2.x + ","+vec2.y);
-      //println("vec3 is x,y: "+vec3.x + ","+vec3.y);
-    
+      PVector startOffset = dirSideOffsetVec.get(dirAndSide);               
+      PVector vec1;
+      vec1 = new PVector(x + startOffset.x, y + startOffset.y);
+      limbVecs.add(vec1);   
+  }  
+  
+  void display() {
+    setShapeVecs();
+    limbshape = createShape(p5, legShape);
+    limbshape.setVisible(false);
+    limbshape.translate(limbVecs.get(0).x, limbVecs.get(0).y);
+    limbshape.scale(0.7);
+    //limbshape.disableStyle();
+    limbshape.setFill(white);
+    limbshape.setStroke(black);
+    //limbshape.rotate( side =="R" ? -1 * parentFig.rotation: parentFig.rotation); //rotate for correction direction
+    //if (parentFig.armsMirrorY) limbshape.scale(-1,1); // transform for correct direction
+    if (side=="R") limbshape.scale(-1,1); // transform for correct direction
+    limbshape.rotate(radians(random(-5,5))); // add some randomness    
+    //p5.pushStyle();
+    p5.shape(limbshape);
+    limbshape.setVisible(true);
+    //p5.popStyle(); 
   }    
 }
   
