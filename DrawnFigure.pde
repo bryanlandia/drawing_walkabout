@@ -28,8 +28,12 @@ class DrawnFigure extends PShape {
   float starty;
   
   // Its location relative to drawing PGraphics
-  float drawx;
-  float drawy;
+  //float drawx;
+  //float drawy;
+  
+  // Its direction
+  String direction;
+  float rotation = 0;
   
   // Its L, R, Top, Bottom bounds
   PVector topV;
@@ -50,8 +54,13 @@ class DrawnFigure extends PShape {
   // for masking the video grab image inside the shape
   PGraphics maskCanvas;
   PImage maskImage;
-   
+  
+  
   DrawnFigure(PApplet p5ref) {
+    this(p5ref, "right");  // default is right
+  }
+   
+  DrawnFigure(PApplet p5ref, String dir) {
     super();
     p5 = p5ref;
     added_time = p5.millis();
@@ -60,12 +69,14 @@ class DrawnFigure extends PShape {
     pdrawg = createGraphics(400,400);
     drawgZeroZero = new PVector(p5.width - drawg.width, p5.height - drawg.height);
     
+    direction = dir;
+    rotation = directionsDict.get(direction);
     x = mapGlobalToDrawCanvas(p5.mouseX, 'x') + drawgZeroZero.x;
     y = mapGlobalToDrawCanvas(p5.mouseY, 'y') + drawgZeroZero.y; 
     startx = x;
     starty = y;
-    drawx = 0;
-    drawy = 0;
+    //drawx = 0;
+    //drawy = 0;
 
     // make an additional canvas from which to generate the 
     // video image masking img
@@ -234,8 +245,8 @@ class DrawnFigure extends PShape {
   }
   
   void add_arms() {
-    leftArm = new Arm(p5, this, 'L', centerV.x, centerV.y + 20);
-    rightArm = new Arm(p5, this, 'R', rightestV.x, rightestV.y);
+    leftArm = new Arm(p5, this, "L", centerV.x, centerV.y + 20);
+    rightArm = new Arm(p5, this, "R", rightestV.x, rightestV.y);
     leftArm.display();
     rightArm.display();
     gp.addChild(leftArm.lshape);
@@ -243,8 +254,8 @@ class DrawnFigure extends PShape {
   }
   
   void add_legs() {
-    leftLeg = new Leg(p5, this, 'L', bottomV.x-10, bottomV.y);
-    rightLeg = new Leg(p5, this, 'R', bottomV.x+10, bottomV.y);
+    leftLeg = new Leg(p5, this, "L", bottomV.x-10, bottomV.y);
+    rightLeg = new Leg(p5, this, "R", bottomV.x+10, bottomV.y);
     leftLeg.display();
     rightLeg.display();
     gp.addChild(leftLeg.lshape);
@@ -253,8 +264,8 @@ class DrawnFigure extends PShape {
   
   void add_eyes() {
     //PVector eyesV = new PVector();    
-    leftEye = new Eye(p5, this, 'L', rightestV.x - 30, centerV.y + 5, "neutral_right"); 
-    rightEye = new Eye(p5, this, 'R', rightestV.x - 20 , centerV.y + 5, "neutral_right");
+    leftEye = new Eye(p5, this, "L", rightestV.x - 30, centerV.y + 5, "neutral_right"); 
+    rightEye = new Eye(p5, this, "R", rightestV.x - 20 , centerV.y + 5, "neutral_right");
     
     //eyesV.x = p5.constrain(rightestV.x -20, leftestV.x + 5, rightestV.x - 20);
     leftEye.display();

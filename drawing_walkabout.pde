@@ -36,6 +36,8 @@ PVector drawgZeroZero;
 //our SVG shapes. copied in bodyparts
 PShape armShape;
 
+FloatDict directionsDict;
+
 
 void setup() {
   size(1300, 950);
@@ -45,6 +47,13 @@ void setup() {
   strokeJoin(ROUND);
   smooth(8);
   //textureMode(NORMAL);
+  
+  // direction facing for DrawnFigures
+  directionsDict = new FloatDict();
+  directionsDict.set("right", 0);
+  directionsDict.set("down", HALF_PI);
+  directionsDict.set("left", PI);
+  directionsDict.set("up", PI + HALF_PI);
 
   //noSmooth();
   //tablet = new Tablet(this);  // not working on RPi

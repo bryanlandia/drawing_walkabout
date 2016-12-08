@@ -11,7 +11,7 @@ class BodyPart extends PShape {
   // Its location (relative to parent)
   float x; // x position of limb start 
   float y; // y position of limb start
-  char side; // L, R
+  String side; // L, R
   int lineThickness;
   int arcRadius;
   
@@ -33,14 +33,14 @@ class Eye extends BodyPart {
   float[] expressionRads = new float[2];
   
   
-  Eye(PApplet p5ref, DrawnFigure parentFig, char sideLR, float posX, float posY, String expression) {
+  Eye(PApplet p5ref, DrawnFigure parentFig, String sideLR, float posX, float posY, String expression) {
     super();
     p5 = p5ref;
     figParent = parentFig;
     side = sideLR;
     x = posX;
     y = posY; 
-    lineThickness = 6;    
+    lineThickness = 6;
     arcRadius = 50; 
     expressionRads = expressMap.get(expression);
     //println("Expression was "+expression+" and expressRads vals are:"+expressionRads[0]+","+expressionRads[1]);
@@ -68,14 +68,14 @@ class Limb extends BodyPart {
   //its vectors
   ArrayList<PVector> limbVecs = new ArrayList<PVector>();  
   PVector startPoint, leftStartPoint, rightStartPoint;
-  //float[][] leftStartOffsets;
-  //float[][] rightStartOffsets;
+  String dirAndSide; // combination of figure.direction and figure.side
   
-  Limb(PApplet p5ref, DrawnFigure parentFig, char sideLR, float posX, float posY) {
+  Limb(PApplet p5ref, DrawnFigure parentFig, String sideLR, float posX, float posY) {
       super();
       p5 = p5ref;
       figParent = parentFig;
       side = sideLR;
+      dirAndSide = parentFig.direction + side; //e.g, "rightL", "rightR", "upR", "upL"
       x = posX;
       y = posY;    
       
@@ -101,17 +101,17 @@ class Limb extends BodyPart {
   } 
   
   void update() {}
-  
+        
 }
 
 
 class Arm extends Limb {
   
-  int lineThickness = 7;
-  float[][] leftStartOffsets = { {0.0, 35.0, 45.0}, {20.0, 65.0, 55.0} };
-  float[][] rightStartOffsets = { {0.0, 20.0, 30.0}, {0.0, 30.0, 20.0} };
+  // arm shape positions based on side and direction of fig
+  float[][] dirRStartOffsetsL = { {0.0, 35.0, 45.0}, {20.0, 65.0, 55.0} };
+  float[][] dirRStartOffsetsR = { {0.0, 20.0, 30.0}, {0.0, 30.0, 20.0} };
   
-  Arm(PApplet p5ref, DrawnFigure parentFig, char sideLR, float posX, float posY) {
+  Arm(PApplet p5ref, DrawnFigure parentFig, String sideLR, float posX, float posY) {
      super(p5ref, parentFig, sideLR, posX, posY);
   }     
   
@@ -123,15 +123,15 @@ class Arm extends Limb {
     
       float[][] startOffsets = new float[3][3];
            
-      switch(side) {
-        case 'L':
+      switch(dirAndSide) {
+        case "rightL":
           println("using leftStartOffsets as startOffsets");
-          startOffsets = arrayCopyMultiDim(leftStartOffsets, startOffsets);
+          startOffsets = arrayCopyMultiDim(dirRStartOffsetsL, startOffsets);
           break;
        
-        case 'R':
+        case "rightR":
           println("using rightStartOffsets as startOffsets");
-          startOffsets = arrayCopyMultiDim(rightStartOffsets, startOffsets);
+          startOffsets = arrayCopyMultiDim(dirRStartOffsetsR, startOffsets);
           break;
       }
           
@@ -171,7 +171,7 @@ class Leg extends Limb {
   float[][] leftStartOffsets = { {-10.0, -13.0, 0}, {0.0, 80.0, 80.0} };
   float[][] rightStartOffsets = { {10.0, 13.0, 26.0}, {0.0, 80.0, 80.0} };
   
-  Leg(PApplet p5ref, DrawnFigure parentFig, char sideLR, float posX, float posY) {
+  Leg(PApplet p5ref, DrawnFigure parentFig, String sideLR, float posX, float posY) {
      super(p5ref, parentFig, sideLR, posX, posY);
   }  
   
@@ -184,12 +184,12 @@ class Leg extends Limb {
       float[][] startOffsets = new float[3][3];
             
       switch(side) {
-        case 'L':
+        case "L":
           //println("using leftStartOffsets as startOffsets");
           startOffsets = arrayCopyMultiDim(leftStartOffsets, startOffsets);
           break;
        
-        case 'R':
+        case "R":
           //println("using rightStartOffsets as startOffsets");
           startOffsets = arrayCopyMultiDim(rightStartOffsets, startOffsets);
           break;
