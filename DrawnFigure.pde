@@ -103,7 +103,7 @@ class DrawnFigure extends PShape {
     body.beginShape(); //<>//
     body.stroke(white);
     body.strokeWeight(10);
-    body.noFill();    
+    body.fill(white);    
     
   }
   
@@ -276,7 +276,7 @@ class DrawnFigure extends PShape {
   }
   
   void add_head() {
-    head = new Head(p5, this, centerV.x, topV.y - 20);
+    head = new Head(p5, this, centerV.x, topV.y - 22);
     head.display();
     gp.addChild(head.headShape);    
     has_head = true;

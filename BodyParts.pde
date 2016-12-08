@@ -61,8 +61,8 @@ class Eye extends BodyPart {
   
   ArrayList<PVector> eyeVecs = new ArrayList<PVector>(); 
   HashMap<String,float[]> expressMap = new HashMap<String,float[]>() {{
-     put("neutral_right", new float[] { PConstants.PI, PConstants.PI+PConstants.QUARTER_PI });
-     put("neutral_left", new float[] { PConstants.PI, PConstants.PI+PConstants.QUARTER_PI });
+     put("neutral_right", new float[] { PConstants.PI, PConstants.PI+(0.5*PConstants.QUARTER_PI) });
+     put("neutral_left", new float[] { PConstants.PI, PConstants.PI+(0.5*PConstants.QUARTER_PI) });
   }};
   float[] expressionRads = new float[2];
   
