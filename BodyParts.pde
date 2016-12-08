@@ -40,8 +40,8 @@ class Eye extends BodyPart {
     side = sideLR;
     x = posX;
     y = posY; 
-    lineThickness = 5;    
-    arcRadius = 30; 
+    lineThickness = 6;    
+    arcRadius = 50; 
     expressionRads = expressMap.get(expression);
     //println("Expression was "+expression+" and expressRads vals are:"+expressionRads[0]+","+expressionRads[1]);
     // can probably do away with an ArrayList here but keep for now
@@ -125,12 +125,12 @@ class Arm extends Limb {
            
       switch(side) {
         case 'L':
-          //println("using leftStartOffsets as startOffsets");
+          println("using leftStartOffsets as startOffsets");
           startOffsets = arrayCopyMultiDim(leftStartOffsets, startOffsets);
           break;
        
         case 'R':
-          //println("using rightStartOffsets as startOffsets");
+          println("using rightStartOffsets as startOffsets");
           startOffsets = arrayCopyMultiDim(rightStartOffsets, startOffsets);
           break;
       }
@@ -147,6 +147,21 @@ class Arm extends Limb {
       //aprintln("vec3 is x,y: "+vec3.x + ","+vec3.y);
     
   }  
+  
+  void display() {
+    setShapeVecs();
+    lshape = createShape(p5, armShape);
+    lshape.setVisible(false);
+    lshape.translate(limbVecs.get(0).x, limbVecs.get(0).y);
+    lshape.scale(1.25);
+    lshape.disableStyle();
+    lshape.rotate(radians(random(-20,20)));    
+    //p5.pushStyle();
+    p5.shape(lshape);
+    lshape.setVisible(true);
+    //p5.popStyle();
+  }
+    
 }
 
 

@@ -82,10 +82,11 @@ class DrawnFigure extends PShape {
 
     gp = p5.createShape(PConstants.GROUP); //<>//
     body = p5.createShape();
+    if (body == null) removeDrawnFigure(this); 
     body.beginShape(); //<>//
     body.stroke(255);
     body.strokeWeight(10);
-    body.fill(255);
+    body.noFill();
 
    //shouldn't need styles since it just gets drawg pixels as an image 
     
@@ -147,7 +148,8 @@ class DrawnFigure extends PShape {
   
   void draw_complete() {
     // complete the body shape
-    body.endShape(PConstants.CLOSE);   
+    body.endShape(PConstants.CLOSE);  
+    
     get_bounds_vecs();
     if (isViableFigure() == false) {
       removeDrawnFigure(this);
@@ -213,8 +215,10 @@ class DrawnFigure extends PShape {
       if (has_skin == false) add_skin();
     }
     
-    if (has_eyes && has_limbs && has_skin) {
-      
+    //if (has_eyes && has_limbs && has_skin) move();
+  }
+  
+  void move() {   
       // TODO: this will turn into much more complex
       // movement behavior
       
@@ -223,18 +227,17 @@ class DrawnFigure extends PShape {
         x+=1;
                
         //println(x);
-      }
-    } 
+      } 
 }
 
   void display() {
     // redisplay the DrawnFigure and masked image
-    p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
     float diffx = x - startx;
     float diffy = y - starty;
     if (has_skin) {
       p5.image(skin, drawgZeroZero.x + diffx, drawgZeroZero.y + diffy);
     }
+    p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
   }
   
   void add_limbs() {

@@ -31,11 +31,15 @@ int skinDelay = 1000;
 
 PVector drawgZeroZero;
 
+//our SVG shapes. copied in bodyparts
+PShape armShape;
+
 
 void setup() {
-  size(1000, 1000);
+  size(1300, 950);
   background(bgColor);
   stroke(239);  
+  fill(255);
   strokeJoin(ROUND);
   smooth(8);
   //textureMode(NORMAL);
@@ -56,7 +60,10 @@ void setup() {
     drawCam.start();
     
   }
- 
+  
+  //load our SVGs, 
+  armShape = loadShape("arm_tendril0_sm.svg");
+  armShape.setVisible(false); 
 }
 
 
