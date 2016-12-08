@@ -3,9 +3,10 @@ import processing.video.*;
 
 
 boolean enableVideo=false;
+boolean traceCoords=true;
+
 String cameraName;
 Capture drawCam;
-
 
 import codeanticode.tablet.*;
 
@@ -18,11 +19,8 @@ DrawnFigure currentfig;
 // create a separate graphics context for drawing 
 // we only use mousex, mousey within that context for tracking
 // the tablet and rendering the drawn line()s
-PGraphics drawg;
-PGraphics pdrawg;
-
 int bgColor = 0;
-int drawbgColor = 100; //16
+int drawbgColor = 0; //16
 
 int limbsDelay = 3000; //ms delay before adding features
 int eyesDelay = 4000;
@@ -42,9 +40,6 @@ void setup() {
   //noSmooth();
   //tablet = new Tablet(this);  // not working on RPi
   drawnFigures = new ArrayList<DrawnFigure>();
-  drawg = createGraphics(600,600);
-  pdrawg = createGraphics(600,600);
-  drawgZeroZero = new PVector(width - drawg.width, height - drawg.height);
   
   //String[] cameras = Capture.list(); // on my MacBook Pro creates NullPointerException!
   //printArray(cameras);

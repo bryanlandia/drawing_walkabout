@@ -5,7 +5,10 @@ class DrawnFigure extends PShape {
   // reference the Processing applet
   PApplet p5;
 
+  PGraphics drawg;
+  PGraphics pdrawg;
   PImage skin;
+  boolean havepdrawg = false;
 
   // parts of figure in group
   PShape gp;
@@ -41,6 +44,7 @@ class DrawnFigure extends PShape {
   // when it was added
   int added_time;
   
+  
   // has body parts
   boolean has_limbs = false;
   boolean has_eyes = false;
@@ -49,12 +53,19 @@ class DrawnFigure extends PShape {
   // for masking the video grab image inside the shape
   PGraphics maskCanvas;
   PImage maskImage;
+  
+  boolean startedDrawCanvases = false;
 
   
   DrawnFigure(PApplet p5ref) {
     super();
     p5 = p5ref;
     added_time = p5.millis();
+    
+    drawg = createGraphics(600,600);
+    pdrawg = createGraphics(600,600);
+    drawgZeroZero = new PVector(p5.width - drawg.width, p5.height - drawg.height);
+    
     x = mapGlobalToDrawCanvas(p5.mouseX, 'x') + drawgZeroZero.x;
     y = mapGlobalToDrawCanvas(p5.mouseY, 'y') + drawgZeroZero.y; 
     //startx = x;
@@ -72,21 +83,25 @@ class DrawnFigure extends PShape {
     maskCanvas.fill(255); 
     maskCanvas.beginShape();
 
-    gp = p5.createShape(PConstants.GROUP);
+    gp = p5.createShape(PConstants.GROUP); //<>//
     body = p5.createShape();
     body.beginShape();
     body.stroke(255);
     body.strokeWeight(10);
     body.fill(255);
 
+   //shouldn't need styles since it just gets drawg pixels as an image 
+    
+  }
+  
+  void init_drawg() {
     drawg.beginDraw();    
     drawg.background(drawbgColor); // TMP  
     drawg.stroke(255);
-    drawg.strokeWeight(10);
-     //<>//
-    pdrawg.beginDraw(); 
-    //shouldn't need styles since it just gets drawg pixels as an image 
+    drawg.strokeWeight(5);
     
+    //pdrawg.beginDraw();
+    //startedDrawCanvases = true;
   }
 
   void draw_listen() {
@@ -102,24 +117,31 @@ class DrawnFigure extends PShape {
     maskCanvas.vertex(vect.x, vect.y);
     
     // draw to a separate PGraphics 'canvas' to restrict the drawn objects
-    // to the bottom right corner of the sketch but still use mouse coords from the pen
-       
+    // to the bottom right corner of the sketch but still use mouse coords from the pen //<>//
+        //<>//
     // translate coords to display only within the drawing PGraphic area
-    //float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'), 
-    //                       mapGlobalToDrawCanvas(p5.pmouseY, 'y'), 
-    //                       mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
-    //                       mapGlobalToDrawCanvas(p5.mouseY, 'y') 
-    //                     };
+    float[] lineCoords = { mapGlobalToDrawCanvas(p5.pmouseX, 'x'), 
+                           mapGlobalToDrawCanvas(p5.pmouseY, 'y'), 
+                           mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
+                           mapGlobalToDrawCanvas(p5.mouseY, 'y') 
+                         };
 
     ////printArray(lineCoords);
-    //drawg.image(pdrawg, 0, 0);
-    //drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
-    //drawg.endDraw();
-    //p5.image(pdrawg, p5.width - drawg.width, p5.height - drawg.height);
+    p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y);
+    
+    init_drawg(); //start over in the main draw canvas
+    
+    if (havepdrawg) drawg.image(pdrawg.get(), 0, 0);
+    
+    drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
+    drawg.endDraw();
+    p5.image(pdrawg, drawgZeroZero.x, drawgZeroZero.y); //<>//
     
     // set contents of pdrawg to current drawg     //<>//
-    //pdrawg.image(drawg, 0, 0); //p5.width - drawg.width, p5.height - drawg.height); //<>//
-    //pdrawg.endDraw();
+    pdrawg.beginDraw();
+    pdrawg.image(drawg.get(), 0, 0);
+    pdrawg.endDraw();
+    havepdrawg = true;
     
     //p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y);
     
@@ -135,9 +157,9 @@ class DrawnFigure extends PShape {
     drawnFigures.add(this);    
     get_bounds_vecs();
     
-    drawg.endDraw(); //<>//
-    pdrawg.endDraw();
-     //<>//
+    //drawg.endDraw();
+    //pdrawg.endDraw();
+    
     maskCanvas.endShape();
     maskCanvas.endDraw();
     maskImage = maskCanvas.get();
@@ -256,6 +278,25 @@ class DrawnFigure extends PShape {
     //p5.image(maskImage, x, y);
     has_skin = true;  
   }
+  
+
+  /* 
+  // UTILITY FUNCTIONS
+  */
+  
+  float mapGlobalToDrawCanvas(float globalCoord, char xy) {  
+    float drawCoord = map(globalCoord, 
+               0, xy == 'x' ? p5.width : p5.height, 
+               0, xy == 'x' ? drawg.width : drawg.height);
+    println("mapped globalCoord ("+xy+")" +globalCoord+" to drawg coord "+drawCoord);
+    return drawCoord;
+  }
+  
+  float mapDrawCanvasToGlobal(float drawCoord, char xy) {
+    return map(drawCoord, 
+               0, xy == 'x' ? drawg.width: drawg.height,
+               0, xy == 'x' ? p5.width: p5.height);
+  }  
   
 
 }
