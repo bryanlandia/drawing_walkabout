@@ -1,6 +1,28 @@
 import processing.video.*;
 //import gab.opencv.*;
 
+/*
+
+a kind of game where participants draw shapes in one area of the 
+sketch, and the shapes become living figures having a skin that is
+a captured video still of the face of the shape maker.  
+the figures must react to their environment and survive
+
+figures need space and need food.  they can change their reaction 
+toward other figures based on influence of others, and based on 
+how healthy they are.
+
+space is determined based on video capture of the window panes
+themselves. the crowd of real people in SFPC will cast their shadows and
+reduce space.
+
+food is created when a shape that is drawn too small to be a figure.
+it doesn't get limbs or eyes (just a solid fill).  
+
+emergent crowd behaviors are displayed .... ? TODO more figuring
+
+*/
+
 
 boolean enableVideo=false;
 boolean traceCoords=false;
@@ -31,7 +53,8 @@ int drawbgColor = 0; //16
 color white = color(239);
 color black = color(0);
 
-int limbsDelay = 2000; //ms delay before adding features
+int headDelay = 1000; //ms delay before adding features
+int limbsDelay = 2000; 
 int eyesDelay = 3000;
 int skinDelay = 1000;
 

@@ -22,6 +22,32 @@ class BodyPart extends PShape {
     
 }
 
+class Head extends BodyPart {
+  
+  String direction;
+  PShape headShape;
+  
+  Head(PApplet p5ref, DrawnFigure figParent, float posX, float posY) {
+    p5 = p5ref;
+    parentFig = figParent;
+    x = posX;
+    y = posY;
+  }
+  
+  void update() {
+  }
+  
+  void display() {
+    float headW = constrain(parentFig.bodyWidth / 3, 20, 50);
+    float headH = headW;
+    headShape = p5.createShape(ELLIPSE, x, y, headW, headH);
+    headShape.setStroke(white);
+    headShape.setStrokeWeight(7);
+    headShape.setFill(black);
+  }
+  
+}
+
 
 class Eye extends BodyPart {
   
@@ -32,6 +58,9 @@ class Eye extends BodyPart {
   }};
   float[] expressionRads = new float[2];
   
+  Eye(PApplet p5ref, DrawnFigure figParent, String sideLR, float posX, float posY) {
+    this(p5ref, figParent, sideLR, posX, posY, "neutral_left");
+  }
   
   Eye(PApplet p5ref, DrawnFigure figParent, String sideLR, float posX, float posY, String expression) {
     super();
@@ -40,7 +69,7 @@ class Eye extends BodyPart {
     side = sideLR;
     x = posX;
     y = posY; 
-    lineThickness = 6;
+    lineThickness = 4;
     arcRadius = 50; 
     expressionRads = expressMap.get(expression);
     //println("Expression was "+expression+" and expressRads vals are:"+expressionRads[0]+","+expressionRads[1]);

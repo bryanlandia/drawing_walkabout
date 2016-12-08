@@ -18,6 +18,7 @@ class DrawnFigure extends PShape {
   Leg rightLeg;
   Eye leftEye;
   Eye rightEye;
+  Head head;
   
   ArrayList<PVector> bodyVects = new ArrayList<PVector>();
   
@@ -52,6 +53,7 @@ class DrawnFigure extends PShape {
   int added_time;
     
   // has body parts
+  boolean has_head = false;
   boolean has_limbs = false;
   boolean has_eyes = false;
   boolean has_skin = false;
@@ -102,6 +104,7 @@ class DrawnFigure extends PShape {
     body.stroke(white);
     body.strokeWeight(10);
     body.noFill();    
+    
   }
   
   void init_drawg() {
@@ -164,6 +167,7 @@ class DrawnFigure extends PShape {
     }
     
     gp.addChild(body);
+
     // now draw it within the corner of the drawing canvas
     p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
     drawnFigures.add(this);    
@@ -209,6 +213,9 @@ class DrawnFigure extends PShape {
   
   void update() {
     int now_ms = p5.millis();
+    if (now_ms - added_time > headDelay) {
+      if (has_limbs == false) add_head();
+    }
     if (now_ms - added_time > limbsDelay) {
       if (has_limbs == false) add_limbs();
     }
@@ -265,6 +272,13 @@ class DrawnFigure extends PShape {
     p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
   }
   
+  void add_head() {
+    head = new Head(p5, this, centerV.x, topV.y - 10);
+    head.display();
+    gp.addChild(head.headShape);    
+    has_head = true;
+  }
+  
   void add_limbs() {
     add_arms();
     add_legs();
@@ -291,8 +305,8 @@ class DrawnFigure extends PShape {
   
   void add_eyes() {
     //PVector eyesV = new PVector();    
-    leftEye = new Eye(p5, this, "L", rightestV.x - 30, centerV.y + 5, "neutral_right"); 
-    rightEye = new Eye(p5, this, "R", rightestV.x - 20 , centerV.y + 5, "neutral_right");
+    leftEye = new Eye(p5, this, "L", head.x + 20, head.y+5, "neutral_right"); 
+    rightEye = new Eye(p5, this, "R", head.x + 35 , head.y+5, "neutral_right");
     
     //eyesV.x = p5.constrain(rightestV.x -20, leftestV.x + 5, rightestV.x - 20);
     leftEye.display();
