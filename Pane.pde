@@ -23,10 +23,19 @@ class Pane {
     
   }
   
+  void display() {
+    pushStyle();
+    stroke(black);
+    strokeWeight(20);
+    noFill();
+    rect(x, y, width, height);
+    popStyle();
+  }
+  
   PVector getLastDrawnFigureEndPos() {
     try {
       DrawnFigure lastFigInPane = paneFigs.get(paneFigs.size()-1);
-      return new PVector(lastFigInPane.rightestV.x, lastFigInPane.bottomV.y);
+      return new PVector(lastFigInPane.rightestV.x, lastFigInPane.bottomV.y).add(figsInPaneSpaceBuffer,-figsInPaneSpaceBuffer);
     }
     catch (ArrayIndexOutOfBoundsException e) {
       println("caught out of bounds in getLastDrawnFigurePos()");

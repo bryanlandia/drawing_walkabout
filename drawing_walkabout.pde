@@ -42,7 +42,8 @@ ArrayList<DrawnFigure> drawnFigures;
 ArrayList<Pane> panes;
 
 int numPanes=9;
-int paneHoldsFigs=20;
+int paneHoldsFigs=6;
+float figsInPaneSpaceBuffer = -100; //add that onto x, negative to y to leave space between
 Pane freePane;
 
 DrawnFigure currentfig;
@@ -70,7 +71,7 @@ FloatDict directionsDict;
 
 int skinDelay = 1000; //ms til we try adding the skin from video.
 
-int mouseUpCompleteDelay = 1200; //1000
+int mouseUpCompleteDelay = 800; //1000
 int lastMouseUpTime, lastMouseDownTime, lastDrawTime;
 
 void setup() {
@@ -90,7 +91,8 @@ void setup() {
   
   //make panes
   for (int i=0;i<numPanes;i++) {
-     Pane pane = new Pane(i*width/3, i*height/3, width/3, height/3);
+     Pane pane = new Pane((i%3)*(width/3), (i%3)*(height/3),
+                          width/3, height/3);
      panes.add(pane);
      pane.name = "Pane"+panes.indexOf(pane);
   }
@@ -129,6 +131,10 @@ void draw() {
     drawnFigures.get(i).update();
     drawnFigures.get(i).display();
   }
+  for (int i = 0; i < panes.size()-2; i++) {
+    //panes.get(i).update();
+    panes.get(i).display();
+  }  
   
   //flip the whole sketch horizontally for projector
   if (flipHoriz) {

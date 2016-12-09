@@ -18,12 +18,10 @@ void removeDrawnFigure(DrawnFigure fig) {
 }
 
 Pane findFreePane() {
- Pane firstPane = panes.get(0); //stuff it into the first one if no space
  for (int i=0; i<panes.size(); i++) {
-   Pane pane = panes.get(i);
-   if (pane.paneFigs.size() < pane.spaces) {
-     return pane; 
+   if (panes.get(i).paneFigs.size() < paneHoldsFigs) {
+     return panes.get(i); 
    }  
  }
-  return firstPane;
+  return panes.get(0); //stuff it into the first one if no space
 }
