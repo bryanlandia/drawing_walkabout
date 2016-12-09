@@ -39,6 +39,8 @@ import codeanticode.tablet.*;
 //int penPress = 50; // pressure sensitivity of tablet pen
 
 ArrayList<DrawnFigure> drawnFigures;
+ArrayList<Food> allFoods = new ArrayList<Food>();
+
 DrawnFigure currentfig;
 
 float figSpeedMin = 1;
@@ -120,7 +122,10 @@ void draw() {
     drawnFigures.get(i).update();
     drawnFigures.get(i).display();
   }
-  
+  for (int i = 0; i < allFoods.size(); i++) {
+    allFoods.get(i).update();
+    allFoods.get(i).display();
+  }  
 }
 
 

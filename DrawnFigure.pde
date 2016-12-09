@@ -162,7 +162,10 @@ class DrawnFigure extends PShape {
     bodyHeight = bottomV.y - topV.y;
     bodyWidth = rightestV.x - leftestV.x;
     if (isViableFigure() == false) {
-      removeDrawnFigure(this);
+      gp.addChild(body); // have to add the body to the group here
+      Food food = new Food(p5, this);
+      allFoods.add(food);
+      removeDrawnFigure(this); //now we can destroy the DrawnFigure
       return;
     }
     
@@ -246,8 +249,8 @@ class DrawnFigure extends PShape {
         //float diffX = destination.x - x;
         //float diffY = destination.y - y;
         PVector diffFromDest = PVector.sub(destination, new PVector(x,y)); // recalculating produces a smoothing
-        println("destination is:("+destination.x+","+destination.y+")");
-        println("distance from destination diffFromDest is:("+diffFromDest.x+","+diffFromDest.y+")");
+        //println("destination is:("+destination.x+","+destination.y+")");
+        //println("distance from destination diffFromDest is:("+diffFromDest.x+","+diffFromDest.y+")");
         
         if (abs(diffFromDest.x) > arrivalThreshold && abs(diffFromDest.y) > arrivalThreshold) { 
           float moveX = (diffFromDest.x / speed) / random(150,250);
@@ -342,7 +345,7 @@ class DrawnFigure extends PShape {
   
   boolean isViableFigure() {
     // if the size of the drawn body shape is too small, signal
-    // to destroy the DrawnFigure
+    // to destroy the DrawnFigure, but create a Food instead
     if (bodyHeight < drawingHeightMin || bodyWidth < drawingWidthMin) {
       return false;
     } else return true;

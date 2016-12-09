@@ -15,7 +15,7 @@ class Pane {
   
   float x, y;
   float width, height;
-  ArrayList<Food> foods = new ArrayList<Food>();
+  ArrayList<Food> paneFoods = new ArrayList<Food>();
   float space;
   
 }

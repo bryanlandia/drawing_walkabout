@@ -43,9 +43,9 @@ class Head extends BodyPart {
     headShape = p5.createShape(GROUP);
     PShape faceShape = p5.createShape(ELLIPSE, x, y, headW, headH);
     faceShape.setStroke(white);
-    faceShape.setStrokeWeight(7);
+    faceShape.setStrokeWeight(4);
     faceShape.setFill(gray);
-    PShape strokeShape = p5.createShape(ELLIPSE, x, y, headW-7, headH-7); //7 is strokeWeight
+    PShape strokeShape = p5.createShape(ELLIPSE, x, y, headW-4, headH-4); //4 is strokeWeight
     faceShape.setStroke(black);
     faceShape.setStrokeWeight(1);
     noFill();
