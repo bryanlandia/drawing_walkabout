@@ -13,8 +13,8 @@ class Food extends PShape {
   Food(PApplet p5ref, DrawnFigure figref) {
     p5 = p5ref;
     fig = figref;
-    x = figref.x;
-    y = figref.y;
+    x = p5.mouseX;
+    y = p5.mouseY;
     println("gp had "+fig.gp.getChildCount()+" children");
     foodShape= p5.createShape(GROUP);
     foodShape.addChild(fig.gp.getChild(0));    
