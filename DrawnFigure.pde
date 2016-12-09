@@ -159,13 +159,22 @@ class DrawnFigure extends PShape {
     body.endShape(PConstants.CLOSE);  
     
     get_bounds_vecs();
-    bodyHeight = bottomV.y - topV.y;
-    bodyWidth = rightestV.x - leftestV.x;
+    
+    try {
+      bodyHeight = bottomV.y - topV.y;
+      bodyWidth = rightestV.x - leftestV.x;
+    } catch (NullPointerException e) { //can hit these drawing too fast
+      removeDrawnFigure(this);  
+    }
+    
     if (isViableFigure() == false) {
       gp.addChild(body); // have to add the body to the group here
       Food food = new Food(p5, this);
       allFoods.add(food);
-      removeDrawnFigure(this); //now we can destroy the DrawnFigure
+      drawg = null;
+      pdrawg = null;
+      maskCanvas = null;
+      removeDrawnFigure(this); //now we can destroy the DrawnFigure      
       return;
     }
     
