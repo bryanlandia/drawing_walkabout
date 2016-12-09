@@ -113,14 +113,19 @@ class DrawnFigure extends PShape {
     
     // are we ready to complete the drawing?
     // if it's been longer than set delay since both last mouseReleased
-    // and last mousePressed time then complete
+    // and last mousePressed time, and there has been a mouseReleased
+    // since creation, then complete
     int now = millis();
     if (now-lastMouseUpTime >= mouseUpCompleteDelay && 
-        now-lastMouseDownTime >= mouseUpCompleteDelay ) {
+        now-lastMouseDownTime >= mouseUpCompleteDelay &&
+        lastMouseUpTime > added_time) {
       draw_complete();
       return;
     }
+    
+    lastDrawTime = millis();
        
+    //if (mousePressed)
     PVector vect = new PVector(mapGlobalToDrawCanvas(p5.mouseX, 'x'),
                                mapGlobalToDrawCanvas(p5.mouseY, 'y'));
     body.vertex(vect.x, vect.y);
@@ -138,30 +143,32 @@ class DrawnFigure extends PShape {
                            mapGlobalToDrawCanvas(p5.mouseY, 'y') 
                          }; //<>//
  //<>// //<>//
-    p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y, drawgScreenScaleX, drawgScreenScaleY); //<>//
+    //p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y, drawgScreenScaleX, drawgScreenScaleY); //<>//
     
     init_drawg(); //start over in the main draw canvas
     
     // draw it to screen way scaled up, but shifted over so drawer can see currently drawn line
-    PVector drawnLengthVec =  new PVector(lineCoords[2]-lineCoords[0], lineCoords[3]-lineCoords[1]); // recalculating produces a smoothing
-    println("got toScreenOffsetVec PVector of coords:"+drawnLengthVec.x+","+drawnLengthVec.y);
+    PVector drawnLengthVec =  new PVector(lineCoords[2]-lineCoords[0], lineCoords[3]-lineCoords[1]);
+    //drawnLengthVec = drawnLengthVec.mult(drawgRealScaleX/drawgScreenScaleX);
+
+    //println("got toScreenOffsetVec PVector of coords:"+drawnLengthVec.x+","+drawnLengthVec.y);
  
-    if (havepdrawg) drawg.image(pdrawg.get(), 0, 0);
-    //if (havepdrawg) drawg.image(pdrawg.get(), 0-drawnLengthVec.x, 0-drawnLengthVec.y);
-    
-    
+    if (havepdrawg) drawg.image(pdrawg.get(), 0,0);
+  
     drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
     drawg.endDraw();
     
     p5.image(pdrawg, drawgZeroZero.x, drawgZeroZero.y, drawgScreenScaleX, drawgScreenScaleY); //<>//
     
-    
     // set contents of pdrawg to current drawg     //<>// //<>//
-    pdrawg.beginDraw();
-    //pdrawg.image(drawg.get(), 0, 0); //<>//
-    pdrawg.image(drawg.get(), 0-drawnLengthVec.x, 0-drawnLengthVec.y);
-    pdrawg.endDraw();
-    havepdrawg = true;
+    // don't bother if we haven't moved this frame
+    if (drawnLengthVec.x > 0 || drawnLengthVec.y > 0 ) {
+      pdrawg.beginDraw();
+      pdrawg.image(drawg.get(), -drawnLengthVec.x, -drawnLengthVec.y); //<>//
+      //pdrawg.image(drawg.get(), 0,0);
+      pdrawg.endDraw();
+      havepdrawg = true;
+    }
   } //<>//
   
   void draw_complete() { //<>//
@@ -229,11 +236,26 @@ class DrawnFigure extends PShape {
       //if (has_skin == false && enableVideo == true) add_skin();
       if (has_skin == false) {
         add_skin();
-                
+      }
+      if (destination == null) {
+        
         // TMP now give it a destination... later will be done with rules
         println("adding new destination");
-        destination = new PVector(random(0,p5.width),random(0,p5.height));
-        
+        int thisIndex = drawnFigures.indexOf(this);
+        try {
+          PVector lastDestination = drawnFigures.get(thisIndex-1).destination;
+          destination = lastDestination.add(width, height);
+        } catch (ArrayIndexOutOfBoundsException e) {
+          println("out of bounds!!!"); // should just be the first one drawn
+          Pane freePane = findFreePane(); 
+          destination = new PVector(freePane.x, freePane.y);
+        }
+        catch (NullPointerException e) {
+          //destinations become null after arrival
+          println("nullpointer!");
+          destination = new PVector(drawnFigures.get(thisIndex-1).x, drawnFigures.get(thisIndex-1).y).add(width, height); 
+        }
+        println("destination is:"+destination);
       }
     }
     

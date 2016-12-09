@@ -15,7 +15,18 @@ class Pane {
   
   float x, y;
   float width, height;
-  ArrayList<DrawnFigure> paneFigs = new ArrayList<DrawnFigure>();
-  float space;
+  ArrayList<DrawnFigure> paneFigs;
+  int space;
+  
+  
+  Pane(float posX, float posY, float w, float h) {
+    space = paneHoldsFigs;
+    x = posX;
+    y = posY;
+    width = w;
+    height = h;
+    paneFigs = new ArrayList<DrawnFigure>();
+    
+  }
   
 }

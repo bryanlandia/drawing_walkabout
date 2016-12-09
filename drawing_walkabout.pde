@@ -25,6 +25,7 @@ trace my journal pages from SFPC
 
 boolean enableVideo=false;
 boolean traceCoords=false;
+boolean flipHoriz = false; //doesn't work plus probably can do with projector
 
 int drawingHeightMin = 200;
 int drawingWidthMin = 200;
@@ -38,6 +39,10 @@ import codeanticode.tablet.*;
 //int penPress = 50; // pressure sensitivity of tablet pen
 
 ArrayList<DrawnFigure> drawnFigures;
+ArrayList<Pane> panes;
+
+int numPanes=9;
+int paneHoldsFigs=20;
 
 DrawnFigure currentfig;
 
@@ -65,10 +70,11 @@ FloatDict directionsDict;
 int skinDelay = 1000; //ms til we try adding the skin from video.
 
 int mouseUpCompleteDelay = 1200; //1000
-int lastMouseUpTime, lastMouseDownTime;
+int lastMouseUpTime, lastMouseDownTime, lastDrawTime;
 
 void setup() {
   size(1300, 880);
+  //frameRate(120);
   background(bgColor);
   stroke(white);  
   fill(white);
@@ -79,6 +85,13 @@ void setup() {
 
   //tablet = new Tablet(this);  // not working on RPi
   drawnFigures = new ArrayList<DrawnFigure>();
+  panes = new ArrayList<Pane>();
+  
+  //make panes
+  for (int i=0;i<numPanes;i++) {
+     Pane pane = new Pane(i*width/3, i*height/3, width/3, height/3);
+     panes.add(pane);
+  }
   
   //String[] cameras = Capture.list(); // on my MacBook Pro creates NullPointerException!
   //printArray(cameras);
@@ -97,6 +110,14 @@ void setup() {
 
 void draw() {
   background(bgColor);
+
+  //flip the whole sketch horizontally for projector
+  if (flipHoriz) {
+    pushMatrix();
+    scale(-1,1);
+    translate(width,0);
+    mouseX = width-mouseX;
+  }
   
   if (currentfig != null) {
     currentfig.draw_listen();    
@@ -106,6 +127,14 @@ void draw() {
     drawnFigures.get(i).update();
     drawnFigures.get(i).display();
   }
+  
+  //flip the whole sketch horizontally for projector
+  if (flipHoriz) {
+    popMatrix();
+    mouseX = width-mouseX;
+  }
+  
+  
  
 }
 
