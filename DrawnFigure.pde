@@ -1,5 +1,9 @@
+//import java.awt.*;
+//import java.awt.event.*;
+
 
 class DrawnFigure extends PShape {
+//implements MouseListener {
   
   // reference the Processing applet
   PApplet p5;
@@ -12,13 +16,6 @@ class DrawnFigure extends PShape {
   // parts of figure in group
   PShape gp;
   PShape body;
-  Arm leftArm;
-  Arm rightArm;
-  Leg leftLeg;
-  Leg rightLeg;
-  Eye leftEye;
-  Eye rightEye;
-  Head head;
   
   ArrayList<PVector> bodyVects = new ArrayList<PVector>();
   
@@ -37,7 +34,6 @@ class DrawnFigure extends PShape {
   // Its direction (which was shape is facing)
   String direction;
   float rotation = 0;
-  boolean armsMirrorY = false; //direction left requires Y mirroring 
   
   // Its L, R, Top, Bottom bounds
   PVector topV;
@@ -53,9 +49,6 @@ class DrawnFigure extends PShape {
   int added_time;
     
   // has body parts
-  boolean has_head = false;
-  boolean has_limbs = false;
-  boolean has_eyes = false;
   boolean has_skin = false;
   
   // for masking the video grab image inside the shape
@@ -79,8 +72,7 @@ class DrawnFigure extends PShape {
     drawgZeroZero = new PVector(p5.width - drawg.width, p5.height - drawg.height);
     
     direction = dir;
-    rotation = directionsDict.get(direction);
-    armsMirrorY = (dir == "left" || dir == "up") ? true : false;
+    //rotation = directionsDict.get(direction); not sure if we will use this
     
     x = mapGlobalToDrawCanvas(p5.mouseX, 'x') + drawgZeroZero.x;
     y = mapGlobalToDrawCanvas(p5.mouseY, 'y') + drawgZeroZero.y; 
@@ -102,23 +94,32 @@ class DrawnFigure extends PShape {
     if (body == null) removeDrawnFigure(this); 
     body.beginShape(); //<>//
     body.stroke(white);
-    body.strokeWeight(7);
-    body.fill(white);    
-    
+    body.strokeWeight(2);
+    body.fill(gray);         //<>//
   }
-  
-  void init_drawg() {
+    
+  void init_drawg() { //<>//
     drawg.beginDraw();    
     drawg.background(drawbgColor); // TMP  
     drawg.stroke(white);
-    drawg.strokeWeight(5);
+    drawg.strokeWeight(2);
   }
 
   void draw_listen() {
     // trace the outline so we can see what we are doing
     // as a line is made with the pen, show a line and record vertices
-    // as Vectors for body shape    
+    // as Vectors for body shape  
     
+    // are we ready to complete the drawing?
+    // if it's been longer than set delay since both last mouseReleased
+    // and last mousePressed time then complete
+    int now = millis();
+    if (now-lastMouseUpTime >= mouseUpCompleteDelay && 
+        now-lastMouseDownTime >= mouseUpCompleteDelay ) {
+      draw_complete();
+      return;
+    }
+       
     PVector vect = new PVector(mapGlobalToDrawCanvas(p5.mouseX, 'x'),
                                mapGlobalToDrawCanvas(p5.mouseY, 'y'));
     body.vertex(vect.x, vect.y);
@@ -134,10 +135,10 @@ class DrawnFigure extends PShape {
                            mapGlobalToDrawCanvas(p5.pmouseY, 'y'), 
                            mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
                            mapGlobalToDrawCanvas(p5.mouseY, 'y') 
-                         };
-
-    ////printArray(lineCoords);
-    p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y);
+                         }; //<>//
+ //<>//
+    ////printArray(lineCoords); //<>//
+    p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y); //<>//
     
     init_drawg(); //start over in the main draw canvas
     
@@ -152,11 +153,11 @@ class DrawnFigure extends PShape {
     pdrawg.image(drawg.get(), 0, 0); //<>//
     pdrawg.endDraw();
     havepdrawg = true;
-  }
+  } //<>//
   
-  void draw_complete() {
+  void draw_complete() { //<>//
     // complete the body shape
-    body.endShape(PConstants.CLOSE);  
+    body.endShape(PConstants.CLOSE);   //<>//
     
     get_bounds_vecs();
     
@@ -167,18 +168,6 @@ class DrawnFigure extends PShape {
       removeDrawnFigure(this);  
     }
     
-    if (isViableFigure() == false) {
-      gp.addChild(body); // have to add the body to the group here
-      Food food = new Food(p5, this);
-      allFoods.add(food);
-      drawg = null;
-      pdrawg = null;
-      maskCanvas = null;
-      removeDrawnFigure(this); //now we can destroy the DrawnFigure      
-      return;
-    }
-    
-    add_limbs();
     gp.addChild(body);
 
     // now draw it within the corner of the drawing canvas
@@ -193,6 +182,7 @@ class DrawnFigure extends PShape {
     maskCanvas.endDraw();
     maskImage = maskCanvas.get();
     maskCanvas = null;
+    currentfig = null;
   }
 
 
@@ -226,27 +216,19 @@ class DrawnFigure extends PShape {
   
   void update() {
     int now_ms = p5.millis();
-    if (now_ms - added_time > headDelay) {
-      if (has_head == false) add_head();
-    }
-    // we want to instead draw them first so they are bottom in depth stack
-    //if (now_ms - added_time > limbsDelay) {
-    //  if (has_limbs == false) add_limbs();
-    //}
-    if (now_ms - added_time > eyesDelay) {
-      if (has_eyes == false) add_eyes();
-    }    
     if (now_ms - added_time > skinDelay ) {
       //if (has_skin == false && enableVideo == true) add_skin();
       if (has_skin == false) {
         add_skin();
+                
         // TMP now give it a destination... later will be done with rules
         println("adding new destination");
         destination = new PVector(random(0,p5.width),random(0,p5.height));
+        
       }
     }
     
-    if (has_eyes && has_limbs && has_skin && destination != null) move();
+    if (has_skin && destination != null) move();
   }
   
   void move() {   
@@ -287,50 +269,7 @@ class DrawnFigure extends PShape {
     
   }
   
-  void add_head() {
-    head = new Head(p5, this, centerV.x, topV.y - 22);
-    head.display();
-    gp.addChild(head.headShape);    
-    has_head = true;
-  }
-  
-  void add_limbs() {
-    add_arms();
-    add_legs();
-    has_limbs = true;
-  }
-  
-  void add_arms() {
-    leftArm = new Arm(p5, this, "L", leftestV.x, topV.y);
-    rightArm = new Arm(p5, this, "R", rightestV.x, topV.y);
-    leftArm.display();
-    rightArm.display();
-    gp.addChild(leftArm.limbshape);
-    gp.addChild(rightArm.limbshape);
-  }
-  
-  void add_legs() {
-    leftLeg = new Leg(p5, this, "L", leftestV.x, bottomV.y);
-    rightLeg = new Leg(p5, this, "R", rightestV.x+10, bottomV.y);
-    leftLeg.display();
-    rightLeg.display();
-    gp.addChild(leftLeg.limbshape);
-    gp.addChild(rightLeg.limbshape);
-  }
-  
-  void add_eyes() {
-    //PVector eyesV = new PVector();    
-    leftEye = new Eye(p5, this, "L", head.x + 20, head.y+5, "neutral_right"); 
-    rightEye = new Eye(p5, this, "R", head.x + 30 , head.y+5, "neutral_right");
     
-    //eyesV.x = p5.constrain(rightestV.x -20, leftestV.x + 5, rightestV.x - 20);
-    leftEye.display();
-    rightEye.display();
-    gp.addChild(leftEye.limbshape);
-    gp.addChild(rightEye.limbshape);
-    has_eyes = true;
-  }
-  
   void add_skin() {
     println("adding skin");
     if (enableVideo) {
@@ -351,27 +290,23 @@ class DrawnFigure extends PShape {
     //p5.image(maskImage, x, y);
     has_skin = true;  
   }
-  
-  boolean isViableFigure() {
-    // if the size of the drawn body shape is too small, signal
-    // to destroy the DrawnFigure, but create a Food instead
-    if (bodyHeight < drawingHeightMin || bodyWidth < drawingWidthMin) {
-      return false;
-    } else return true;
-    
-  }
-  
+ 
 
   /* 
   // UTILITY FUNCTIONS
   */
   
   float mapGlobalToDrawCanvas(float globalCoord, char xy) {  
-    float drawCoord = map(globalCoord, 
+    try {
+      float drawCoord = map(globalCoord, 
                0, xy == 'x' ? p5.width : p5.height, 
                0, xy == 'x' ? drawg.width : drawg.height);
     if (traceCoords) println("mapped globalCoord ("+xy+")" +globalCoord+" to drawg coord "+drawCoord);
     return drawCoord;
+    } catch (NullPointerException e) {
+      println("NPE on drawg. returning 0");
+      return 0;
+    }
   }
   
   float mapDrawCanvasToGlobal(float drawCoord, char xy) {

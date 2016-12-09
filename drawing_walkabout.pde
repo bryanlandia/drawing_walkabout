@@ -3,23 +3,22 @@ import processing.video.*;
 
 /*
 
-a kind of game where participants draw shapes in one area of the 
-sketch, and the shapes become living figures having a skin that is
-a captured video still of the face of the shape maker.  
-the figures must react to their environment and survive
+TODO:
+remove arms and legs who needs em
+allow continuation of shape, connected by a little line, with a slight pause
+otherwise make a new shape
+so on mouseup don't necessarily complete the drawing
 
-figures need space and need food.  they can change their reaction 
-toward other figures based on influence of others, and based on 
-how healthy they are.
+logic for where the text pieces go
+mark out the panes (they aren't evenly dispersed)
+- maybe just have an overlay of black where the wood is
 
-space is determined based on video capture of the window panes
-themselves. the crowd of real people in SFPC will cast their shadows and
-reduce space.
 
-food is created when a shape that is drawn too small to be a figure.
-it doesn't get limbs or eyes (just a solid fill).  
 
-emergent crowd behaviors are displayed .... ? TODO more figuring
+attract screen in lower right pane "SIGN GUESTBOOK"?  or could just do it on the 
+page itself.
+trace my journal pages from SFPC
+
 
 */
 
@@ -27,8 +26,8 @@ emergent crowd behaviors are displayed .... ? TODO more figuring
 boolean enableVideo=false;
 boolean traceCoords=false;
 
-int drawingHeightMin = 40;
-int drawingWidthMin = 40;
+int drawingHeightMin = 200;
+int drawingWidthMin = 200;
 
 String cameraName;
 Capture drawCam;
@@ -39,7 +38,6 @@ import codeanticode.tablet.*;
 //int penPress = 50; // pressure sensitivity of tablet pen
 
 ArrayList<DrawnFigure> drawnFigures;
-ArrayList<Food> allFoods = new ArrayList<Food>();
 
 DrawnFigure currentfig;
 
@@ -54,39 +52,27 @@ int bgColor = 0;
 int drawbgColor = 0; //16
 color white = color(255); //239;
 color black = color(0);
-color gray = color(100);
-
-int headDelay = 1000; //ms delay before adding features
-int limbsDelay = 2000; 
-int eyesDelay = 3000;
-int skinDelay = 1000;
+color gray = color(130);
 
 PVector drawgZeroZero;
 
-//our SVG shapes. copied in bodyparts
-PShape armShape;
-PShape legShape;
-
 FloatDict directionsDict;
 
+int skinDelay = 1000; //ms til we try adding the skin from video.
+
+int mouseUpCompleteDelay = 1200; //1000
+int lastMouseUpTime, lastMouseDownTime;
 
 void setup() {
-  size(1300, 950);
+  size(1300, 880);
   background(bgColor);
   stroke(white);  
   fill(white);
   strokeJoin(ROUND);
   smooth(8);
-  //textureMode(NORMAL);
   
-  // direction facing for DrawnFigures
-  directionsDict = new FloatDict();
-  directionsDict.set("right", 0);
-  directionsDict.set("down", HALF_PI );//- radians(10));
-  directionsDict.set("left", radians(40));
-  directionsDict.set("up", PI + HALF_PI);// + radians(10));
+  lastMouseUpTime = millis(); //dummy one to start off
 
-  //noSmooth();
   //tablet = new Tablet(this);  // not working on RPi
   drawnFigures = new ArrayList<DrawnFigure>();
   
@@ -102,18 +88,12 @@ void setup() {
     drawCam.start();
     
   }
-  
-  //load our SVGs, 
-  //armShape = loadShape("arm_tendril0_sm.svg");
-  armShape = loadShape("arm_arm0.svg");
-  armShape.setVisible(false);
-  legShape = loadShape("leg_leg0.svg");
-  legShape.setVisible(false);
 }
 
 
 void draw() {
   background(bgColor);
+  
   if (currentfig != null) {
     currentfig.draw_listen();    
 
@@ -122,26 +102,42 @@ void draw() {
     drawnFigures.get(i).update();
     drawnFigures.get(i).display();
   }
-  for (int i = 0; i < allFoods.size(); i++) {
-    allFoods.get(i).update();
-    allFoods.get(i).display();
-  }  
+ 
 }
-
 
 void mousePressed() {
   // start DrawnFigure
-  
-  DrawnFigure fig = new DrawnFigure(this);
-  currentfig = fig;
+  println("mousePressed"); 
+  println("millis is:"+millis());
+  println("lastMouseEventTime was:"+lastMouseUpTime);
+  lastMouseDownTime = millis();
+
+  if (millis() - lastMouseUpTime >= mouseUpCompleteDelay && currentfig == null) {
+    // only start a new DrawnFigure if we've waited for delay
+    // otherwise we are still drawing the old one (maybe crossing a "t")
+    DrawnFigure fig = new DrawnFigure(this);
+    currentfig = fig;
+  }
+
   //if (enableVideo) {drawCam.start();}  would prefer to start() here, but causes rendering issues
 }
 
 
 void mouseReleased() {
+ // this should really be implemented with MouseListener on the DrawnFigure class
  // finish DrawnFigure 
- currentfig.draw_complete();
- currentfig = null;
+ // set a value and then delay a bit before deciding whether
+ // to really complete the current figure
+ println("mouseReleased");
+ println("millis is:"+millis());
+ println("lastMouseUpTime was:"+lastMouseUpTime);
+
+ //if (millis() - lastMouseEventTime >= mouseUpCompleteDelay) {         
+     //currentfig.draw_complete();   
+     //currentfig = null;
+     lastMouseUpTime = millis();
+
+ //}
 }
 
 
