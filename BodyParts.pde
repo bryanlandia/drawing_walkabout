@@ -187,11 +187,11 @@ class Arm extends Limb {
     limbshape = createShape(p5, armShape);
     limbshape.setVisible(false);
     limbshape.translate(limbVecs.get(0).x, limbVecs.get(0).y);
-    limbshape.scale(0.4);
+    limbshape.scale(0.3 + (parentFig.bodyWidth/100)/10 ); // proportional to body size
     //limbshape.disableStyle();
     limbshape.setFill(white);
     limbshape.setStroke(black);
-    limbshape.rotate( side =="R" ? -1 * parentFig.rotation: parentFig.rotation); //rotate for correction direction
+    limbshape.rotate( side == "R" ? -1 * parentFig.rotation: parentFig.rotation); //rotate for correction direction
     //if (parentFig.armsMirrorY) limbshape.scale(-1,1); // transform for correct direction
     if (side=="R") limbshape.scale(-1,1); // transform for correct direction
     limbshape.rotate(radians(random(-5,5))); // add some randomness    

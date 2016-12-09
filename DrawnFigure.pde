@@ -93,7 +93,7 @@ class DrawnFigure extends PShape {
     maskCanvas.beginDraw();
     maskCanvas.background(0);
     maskCanvas.stroke(0);
-    maskCanvas.strokeWeight(10);
+    maskCanvas.strokeWeight(7);
     maskCanvas.fill(255); //needs to be real 255 white 
     maskCanvas.beginShape();
 
@@ -102,7 +102,7 @@ class DrawnFigure extends PShape {
     if (body == null) removeDrawnFigure(this); 
     body.beginShape(); //<>//
     body.stroke(white);
-    body.strokeWeight(10);
+    body.strokeWeight(7);
     body.fill(white);    
     
   }
