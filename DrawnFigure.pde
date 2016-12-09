@@ -173,7 +173,7 @@ class DrawnFigure extends PShape {
   
   void draw_complete() { //<>//
     // complete the body shape
-    body.endShape(PConstants.CLOSE);   //<>//
+    body.endShape(PConstants.OPEN);   //<>//
     
     get_bounds_vecs();
     
@@ -194,7 +194,7 @@ class DrawnFigure extends PShape {
     drawg = null;
     pdrawg = null;
     
-    maskCanvas.endShape();
+    maskCanvas.endShape(PConstants.OPEN);
     maskCanvas.endDraw();
     maskImage = maskCanvas.get();
     maskCanvas = null;
@@ -238,41 +238,48 @@ class DrawnFigure extends PShape {
         add_skin();
       }
       if (destination == null) {
-        
-        // TMP now give it a destination... later will be done with rules
         println("adding new destination");
-        int thisIndex = drawnFigures.indexOf(this);
-        try {
-          PVector lastDestination = drawnFigures.get(thisIndex-1).destination;
-          destination = lastDestination.add(width, height);
-        } catch (ArrayIndexOutOfBoundsException e) {
-          println("out of bounds!!!"); // should just be the first one drawn
-          Pane freePane = findFreePane(); 
-          destination = new PVector(freePane.x, freePane.y);
-        }
-        catch (NullPointerException e) {
-          //destinations become null after arrival
-          println("nullpointer!");
-          destination = new PVector(drawnFigures.get(thisIndex-1).x, drawnFigures.get(thisIndex-1).y).add(width, height); 
-        }
-        println("destination is:"+destination);
+        //int thisIndex = drawnFigures.indexOf(this);
+        
+        //get a destination based on Pane with free spaces
+        Pane freePane = findFreePane(); 
+        println("dest is in " + freePane.name); 
+        //destination = new PVector(freePane.x, freePane.y);
+        // adjust by position of last fig in pane
+        // should add that fig's width and height but use modulo
+        // so it wraps around, or maybe constrain()
+        destination = freePane.getLastDrawnFigureEndPos(); 
+        //add this fig to the Pane
+        freePane.paneFigs.add(this);
+        
+        //try {
+        //  PVector lastDestination = drawnFigures.get(thisIndex-1).destination;
+        //  destination = lastDestination.add(width, height);
+        //} catch (ArrayIndexOutOfBoundsException e) {
+        //  println("out of bounds!!!"); // should just be the first one drawn
+          
+        //}
+        //catch (NullPointerException e) {
+        //  //destinations become null after arrival
+        //  println("nullpointer!");
+        //  destination = new PVector(drawnFigures.get(thisIndex-1).x, drawnFigures.get(thisIndex-1).y).add(width, height ); 
+        //}
+        println("orig destination is:"+destination);
       }
     }
     
     if (has_skin && destination != null) move();
   }
   
-  void move() {   
-      // TODO: this will turn into much more complex
-      // movement behavior
-      
+  void move() {       
       //if (x < p5.width) {
         //destination = new PVector(random(p5.width), random(p5.height));
         //float diffX = destination.x - x;
         //float diffY = destination.y - y;
+        println("destination is:("+destination.x+","+destination.y+")");
         PVector diffFromDest = PVector.sub(destination, new PVector(x,y)); // recalculating produces a smoothing
         //println("destination is:("+destination.x+","+destination.y+")");
-        //println("distance from destination diffFromDest is:("+diffFromDest.x+","+diffFromDest.y+")");
+        println("distance from destination diffFromDest is:("+diffFromDest.x+","+diffFromDest.y+")");
         
         if (abs(diffFromDest.x) > arrivalThreshold && abs(diffFromDest.y) > arrivalThreshold) { 
           float moveX = (diffFromDest.x / speed) / random(150,250);
@@ -314,11 +321,9 @@ class DrawnFigure extends PShape {
     else {
       skin = loadImage("testtexture.jpeg");
     }
-    println("maskImage width:"+maskImage.width);
-    //p5.image(maskCanvas, 100, 100);
+    //println("maskImage width:"+maskImage.width);
     skin.mask(maskImage);
     p5.image(skin, drawgZeroZero.x, drawgZeroZero.y);
-    //p5.image(maskImage, x, y);
     has_skin = true;  
   }
  

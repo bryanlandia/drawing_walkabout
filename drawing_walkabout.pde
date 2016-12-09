@@ -43,6 +43,7 @@ ArrayList<Pane> panes;
 
 int numPanes=9;
 int paneHoldsFigs=20;
+Pane freePane;
 
 DrawnFigure currentfig;
 
@@ -91,6 +92,7 @@ void setup() {
   for (int i=0;i<numPanes;i++) {
      Pane pane = new Pane(i*width/3, i*height/3, width/3, height/3);
      panes.add(pane);
+     pane.name = "Pane"+panes.indexOf(pane);
   }
   
   //String[] cameras = Capture.list(); // on my MacBook Pro creates NullPointerException!

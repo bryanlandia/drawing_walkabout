@@ -21,7 +21,7 @@ Pane findFreePane() {
  Pane firstPane = panes.get(0); //stuff it into the first one if no space
  for (int i=0; i<panes.size(); i++) {
    Pane pane = panes.get(i);
-   if (pane.paneFigs.size() < pane.space) {
+   if (pane.paneFigs.size() < pane.spaces) {
      return pane; 
    }  
  }
