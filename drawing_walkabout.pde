@@ -55,6 +55,10 @@ color black = color(0);
 color gray = color(130);
 
 PVector drawgZeroZero;
+int drawgRealScaleX = 800;
+int drawgRealScaleY = 400;
+int drawgScreenScaleX = 1600;
+int drawgScreenScaleY = 800;
 
 FloatDict directionsDict;
 

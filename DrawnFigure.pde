@@ -67,9 +67,10 @@ class DrawnFigure extends PShape {
     
     speed = random(figSpeedMin, figSpeedMax);
     
-    drawg = createGraphics(400,400);
-    pdrawg = createGraphics(400,400);
-    drawgZeroZero = new PVector(p5.width - drawg.width, p5.height - drawg.height);
+    drawg = createGraphics(drawgRealScaleX, drawgRealScaleY);
+    pdrawg = createGraphics(drawgRealScaleX, drawgRealScaleY);
+    //drawgZeroZero = new PVector(p5.width - drawg.width, p5.height - drawg.height);
+    drawgZeroZero = new PVector(p5.width - drawgRealScaleX, p5.height - drawgRealScaleY);
     
     direction = dir;
     //rotation = directionsDict.get(direction); not sure if we will use this
@@ -136,21 +137,29 @@ class DrawnFigure extends PShape {
                            mapGlobalToDrawCanvas(p5.mouseX, 'x'), 
                            mapGlobalToDrawCanvas(p5.mouseY, 'y') 
                          }; //<>//
- //<>//
-    ////printArray(lineCoords); //<>//
-    p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y); //<>//
+ //<>// //<>//
+    p5.image(drawg, drawgZeroZero.x, drawgZeroZero.y, drawgScreenScaleX, drawgScreenScaleY); //<>//
     
     init_drawg(); //start over in the main draw canvas
     
+    // draw it to screen way scaled up, but shifted over so drawer can see currently drawn line
+    PVector drawnLengthVec =  new PVector(lineCoords[2]-lineCoords[0], lineCoords[3]-lineCoords[1]); // recalculating produces a smoothing
+    println("got toScreenOffsetVec PVector of coords:"+drawnLengthVec.x+","+drawnLengthVec.y);
+ 
     if (havepdrawg) drawg.image(pdrawg.get(), 0, 0);
+    //if (havepdrawg) drawg.image(pdrawg.get(), 0-drawnLengthVec.x, 0-drawnLengthVec.y);
+    
     
     drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
     drawg.endDraw();
-    p5.image(pdrawg, drawgZeroZero.x, drawgZeroZero.y); //<>//
+    
+    p5.image(pdrawg, drawgZeroZero.x, drawgZeroZero.y, drawgScreenScaleX, drawgScreenScaleY); //<>//
+    
     
     // set contents of pdrawg to current drawg     //<>// //<>//
     pdrawg.beginDraw();
-    pdrawg.image(drawg.get(), 0, 0); //<>//
+    //pdrawg.image(drawg.get(), 0, 0); //<>//
+    pdrawg.image(drawg.get(), 0-drawnLengthVec.x, 0-drawnLengthVec.y);
     pdrawg.endDraw();
     havepdrawg = true;
   } //<>//
