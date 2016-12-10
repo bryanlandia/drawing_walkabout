@@ -77,6 +77,7 @@ int lastMouseUpTime, lastMouseDownTime, lastDrawTime;
 
 void setup() {
   size(1024, 768);
+  noCursor();
   //frameRate(120);
   background(bgColor);
   stroke(white);  
