@@ -300,7 +300,11 @@ class DrawnFigure extends PShape {
           y+=moveY;
         }
         else {
-          destination = null;
+          if (random(0,1) < 0.2) {
+            destination = null;
+          } else {
+            destination = destination.add(new PVector(random(-20,20),random(-20,20)));
+          }
         }
                
         //println(x);
