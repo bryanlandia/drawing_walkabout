@@ -39,12 +39,14 @@ class Pane {
     
     //end debug
     
-    pushStyle();
-    stroke(black);
-    strokeWeight(20);
-    noFill();
-    rect(x, y, width, height);
-    popStyle();
+    if (showPaneBorders) {
+      pushStyle();
+      stroke(black);
+      strokeWeight(20);
+      noFill();
+      rect(x, y, width, height);
+      popStyle();
+    }
   }
   
   void clear() {

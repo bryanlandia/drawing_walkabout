@@ -238,7 +238,7 @@ class DrawnFigure extends PShape {
   
   void update() {
     int now_ms = p5.millis();
-    if (now_ms - added_time > dieSecs*1000) die(); //
+    if (now_ms - added_time > dieSecs*1000 && drawnFigures.size() > 20) die(); //
     if (now_ms - added_time > skinDelay ) {
       //if (has_skin == false && enableVideo == true) add_skin();
       if (has_skin == false) {

@@ -26,6 +26,7 @@ trace my journal pages from SFPC
 boolean enableVideo=false;
 boolean traceCoords=false;
 boolean flipHoriz = false; //doesn't work plus probably can do with projector
+boolean showPaneBorders = false;
 
 int drawingHeightMin = 200;
 int drawingWidthMin = 200;
@@ -42,15 +43,15 @@ ArrayList<DrawnFigure> drawnFigures;
 ArrayList<Pane> panes;
 
 int numPanes=9;
-int paneHoldsFigs=6;
-float figsInPaneSpaceBuffer = -100; //add that onto x, negative to y to leave space between
+int paneHoldsFigs=3;
+float figsInPaneSpaceBuffer = -30; //add that onto x, negative to y to leave space between
 
 DrawnFigure currentfig;
 
 float figSpeedMin = 1;
 float figSpeedMax = 2;
 float arrivalThreshold = 10; //close enough for move() operations
-int dieSecs = 45; // 45 : figs only last that long
+int dieSecs = 55; // 45 : figs only last that long
 
 // create a separate graphics context for drawing 
 // we only use mousex, mousey within that context for tracking
@@ -64,8 +65,8 @@ color gray = color(130);
 PVector drawgZeroZero;
 int drawgRealScaleX = 800;
 int drawgRealScaleY = 400;
-int drawgScreenScaleX = 1600;
-int drawgScreenScaleY = 800;
+int drawgScreenScaleX = 3200;
+int drawgScreenScaleY = 1600;
 
 FloatDict directionsDict;
 
@@ -75,7 +76,7 @@ int mouseUpCompleteDelay = 800; //1000
 int lastMouseUpTime, lastMouseDownTime, lastDrawTime;
 
 void setup() {
-  size(1300, 880);
+  size(1024, 768);
   //frameRate(120);
   background(bgColor);
   stroke(white);  
