@@ -23,7 +23,7 @@ trace my journal pages from SFPC
 */
 
 
-boolean enableVideo=false;
+boolean enableVideo=true;
 boolean traceCoords=false;
 boolean flipHoriz = false; //doesn't work plus probably can do with projector
 boolean showPaneBorders = false;
