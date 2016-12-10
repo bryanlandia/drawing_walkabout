@@ -50,6 +50,7 @@ DrawnFigure currentfig;
 float figSpeedMin = 1;
 float figSpeedMax = 2;
 float arrivalThreshold = 10; //close enough for move() operations
+int dieSecs = 45; // 45 : figs only last that long
 
 // create a separate graphics context for drawing 
 // we only use mousex, mousey within that context for tracking
@@ -127,8 +128,10 @@ void draw() {
 
   }
   for (int i = 0; i < drawnFigures.size(); i++) {
-    drawnFigures.get(i).update();
-    drawnFigures.get(i).display();
+    try {
+      drawnFigures.get(i).update();
+      drawnFigures.get(i).display();
+    } catch (IndexOutOfBoundsException e) {}
   }
   for (int i = 0; i < panes.size()-2; i++) {
     //panes.get(i).update();

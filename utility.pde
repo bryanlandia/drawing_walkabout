@@ -6,9 +6,12 @@ float[][] arrayCopyMultiDim (float[][] src, float[][]dest) {
 }
 
 void removeDrawnFigure(DrawnFigure fig) {
-  fig = null;
   try {
     drawnFigures.remove(drawnFigures.indexOf(fig));
+    int paneIndex = panes.indexOf(fig.pane);
+    Pane pane = panes.get(paneIndex);
+    pane.paneFigs.remove(pane.paneFigs.indexOf(fig));
+    fig = null;
   } catch (ArrayIndexOutOfBoundsException e) { 
         // might not have been added  yet
         // do nothing
