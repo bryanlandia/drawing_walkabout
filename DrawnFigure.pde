@@ -27,6 +27,7 @@ class DrawnFigure extends PShape {
   
   // Its destination, TBD by rules
   PVector destination;
+  Pane pane;
   
   // how fast it can move toward destination
   float speed;
@@ -242,15 +243,19 @@ class DrawnFigure extends PShape {
         //int thisIndex = drawnFigures.indexOf(this);
         
         //get a destination based on Pane with free spaces
-        Pane freePane = findFreePane(); 
-        println("dest is in " + freePane.name); 
+        if (pane == null) {
+          Pane freePane = findFreePane(); 
+          pane = freePane; // set it on the fig
+          pane.paneFigs.add(this);
+        }
+        println("dest is in " + pane.name); 
         //destination = new PVector(freePane.x, freePane.y);
         // adjust by position of last fig in pane
         // should add that fig's width and height but use modulo
         // so it wraps around, or maybe constrain()
-        destination = freePane.getLastDrawnFigureEndPos(); 
+        destination = pane.getLastDrawnFigureEndPos(); 
         //add this fig to the Pane
-        freePane.paneFigs.add(this);
+        
         
         //try {
         //  PVector lastDestination = drawnFigures.get(thisIndex-1).destination;

@@ -44,7 +44,6 @@ ArrayList<Pane> panes;
 int numPanes=9;
 int paneHoldsFigs=6;
 float figsInPaneSpaceBuffer = -100; //add that onto x, negative to y to leave space between
-Pane freePane;
 
 DrawnFigure currentfig;
 
@@ -186,5 +185,9 @@ void keyPressed() {
   if (key == 'c' || key == 'C') {
       background(16);
       drawnFigures.clear();
+      for (int i = 0; i < panes.size()-2; i++) {
+        //panes.get(i).update();
+        panes.get(i).clear();
+      }
     } 
   }
