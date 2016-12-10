@@ -90,7 +90,7 @@ void setup() {
   
   //make panes
   for (int i=0;i<numPanes;i++) {
-     Pane pane = new Pane((i%3)*(width/3), (i%3)*(height/3),
+     Pane pane = new Pane((i%3)*(width/3), floor(i/3)*(height/3),
                           width/3, height/3);
      panes.add(pane);
      pane.name = "Pane"+panes.indexOf(pane);

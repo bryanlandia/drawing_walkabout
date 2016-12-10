@@ -18,8 +18,9 @@ void removeDrawnFigure(DrawnFigure fig) {
 }
 
 Pane findFreePane() {
- for (int i=0; i<panes.size(); i++) {
-   if (panes.get(i).paneFigs.size() < paneHoldsFigs) {
+ for (int i=0; i<panes.size()-2; i++) {
+   println(panes.get(i).name + "holds "+panes.get(i).paneFigs.size() + "figs"); 
+   if (panes.get(i).paneFigs.size() <= paneHoldsFigs) {
      return panes.get(i); 
    }  
  }
