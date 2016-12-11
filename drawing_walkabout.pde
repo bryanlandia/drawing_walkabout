@@ -23,7 +23,7 @@ trace my journal pages from SFPC
 */
 
 
-boolean enableVideo=true;
+boolean enableVideo=false;
 boolean traceCoords=false;
 boolean flipHoriz = false; //doesn't work plus probably can do with projector
 boolean showPaneBorders = false;
@@ -34,7 +34,7 @@ int drawingWidthMin = 200;
 String cameraName;
 Capture drawCam;
 
-import codeanticode.tablet.*;
+//import codeanticode.tablet.*;
 
 //Tablet tablet;
 //int penPress = 50; // pressure sensitivity of tablet pen
@@ -63,10 +63,10 @@ color black = color(0);
 color gray = color(130);
 
 PVector drawgZeroZero;
-int drawgRealScaleX = 800;
-int drawgRealScaleY = 400;
-int drawgScreenScaleX = 3200;
-int drawgScreenScaleY = 1600;
+int drawgRealScaleX;//;
+int drawgRealScaleY;// = 400;
+int drawgScreenScaleX;// = 3200;
+int drawgScreenScaleY;// = 1600;
 
 FloatDict directionsDict;
 
@@ -76,8 +76,14 @@ int mouseUpCompleteDelay = 800; //1000
 int lastMouseUpTime, lastMouseDownTime, lastDrawTime;
 
 void setup() {
-  size(1024, 768);
+  size(1360, 900);
+  drawgRealScaleX = width/2;
+  drawgRealScaleY = height;
+  drawgScreenScaleX = floor(drawgRealScaleX*1.5);
+  drawgScreenScaleY = floor(drawgRealScaleY*1.5);
+
   noCursor();
+  
   //frameRate(120);
   background(bgColor);
   stroke(white);  
@@ -135,7 +141,7 @@ void draw() {
       drawnFigures.get(i).display();
     } catch (IndexOutOfBoundsException e) {}
   }
-  for (int i = 0; i < panes.size()-2; i++) {
+  for (int i = 0; i < panes.size(); i++) {
     //panes.get(i).update();
     panes.get(i).display();
   }  
@@ -190,7 +196,7 @@ void keyPressed() {
   if (key == 'c' || key == 'C') {
       background(16);
       drawnFigures.clear();
-      for (int i = 0; i < panes.size()-2; i++) {
+      for (int i = 0; i < panes.size(); i++) {
         //panes.get(i).update();
         panes.get(i).clear();
       }

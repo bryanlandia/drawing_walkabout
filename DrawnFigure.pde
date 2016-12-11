@@ -71,7 +71,7 @@ class DrawnFigure extends PShape {
     drawg = createGraphics(drawgRealScaleX, drawgRealScaleY);
     pdrawg = createGraphics(drawgRealScaleX, drawgRealScaleY);
     //drawgZeroZero = new PVector(p5.width - drawg.width, p5.height - drawg.height);
-    drawgZeroZero = new PVector(p5.width - drawgRealScaleX, p5.height - drawgRealScaleY);
+    drawgZeroZero = new PVector(0, p5.height - drawgRealScaleY);
     
     direction = dir;
     //rotation = directionsDict.get(direction); not sure if we will use this
