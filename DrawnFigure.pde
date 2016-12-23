@@ -18,6 +18,7 @@ class DrawnFigure extends PShape {
   PShape body;
   
   ArrayList<PVector> bodyVects = new ArrayList<PVector>();
+  ArrayList<PVector> overstrokeBodyVecs = new ArrayList<PVector>();
   
   // Its location
   float x;
@@ -104,7 +105,7 @@ class DrawnFigure extends PShape {
     drawg.beginDraw();    
     drawg.background(drawbgColor); // TMP  
     drawg.stroke(white);
-    drawg.strokeWeight(2);
+    drawg.strokeWeight(8);
   }
 
   void draw_listen() {
@@ -130,7 +131,9 @@ class DrawnFigure extends PShape {
     PVector vect = new PVector(mapGlobalToDrawCanvas(p5.mouseX, 'x'),
                                mapGlobalToDrawCanvas(p5.mouseY, 'y'));
     body.vertex(vect.x, vect.y);
-    bodyVects.add(vect);   
+    bodyVects.add(vect);
+    if (!mousePressed) overstrokeBodyVecs.add(vect);
+
 
     maskCanvas.vertex(vect.x, vect.y);
     
@@ -156,7 +159,7 @@ class DrawnFigure extends PShape {
  
     if (havepdrawg) drawg.image(pdrawg.get(), 0,0);
   
-    drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
+    if (mousePressed) drawg.line(lineCoords[0], lineCoords[1], lineCoords[2], lineCoords[3]);
     drawg.endDraw();
     
     p5.image(pdrawg, drawgZeroZero.x, drawgZeroZero.y, drawgScreenScaleX, drawgScreenScaleY); //<>//
@@ -186,9 +189,16 @@ class DrawnFigure extends PShape {
     }
     
     gp.addChild(body);
+    //draw the overstrokes
+    //for (int i=0;i<overstrokeBodyVecs.size();i++) {
+      //PShape overstrokeShp = ;
+    //}
+
 
     // now draw it within the corner of the drawing canvas
     p5.shape(gp, drawgZeroZero.x, drawgZeroZero.y);
+    
+    
     drawnFigures.add(this);    
     
     //remove refs for garbage collector

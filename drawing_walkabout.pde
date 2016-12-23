@@ -76,7 +76,7 @@ int mouseUpCompleteDelay = 800; //1000
 int lastMouseUpTime, lastMouseDownTime, lastDrawTime;
 
 void setup() {
-  size(1360, 900);
+  size(1920, 1080);
   drawgRealScaleX = width/2;
   drawgRealScaleY = height;
   drawgScreenScaleX = floor(drawgRealScaleX*1.5);
@@ -114,7 +114,7 @@ void setup() {
     //String cameraName = "USB Video Class Video"; // built-in
     cameraName = "/dev/video0"; //RaspberryPi PS3eye
     drawCam = new Capture(this, 640, 480, cameraName, 15); //this is fewest fps possible w/cam  
-    drawCam.start();
+
     
   }
 }
